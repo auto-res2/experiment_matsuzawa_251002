@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+The proposed Bayesian Optimization for Iterative Learning (BOIL) approach exploits the iterative structure of learning algorithms. It models the cost-sensitive black-box function, which takes both hyperparameters (x) and training iterations (t) as input, using a Gaussian Process (GP) with a product kernel. The core idea is to compress the entire learning curve into a single numeric score using a user-preferred Sigmoid (Logistic) function, parameterized by a growth parameter (g0) and a middle point (m0). These parameters (g*0, m*0) are learned dynamically by maximizing the GP's log marginal likelihood. The training data is augmented by selectively including intermediate observations from the learning curve, chosen to maximize GP predictive uncertainty while ensuring the GP covariance matrix remains well-conditioned (condition number below a threshold). The cost function for evaluations is approximated by a linear regressor. The acquisition function selects the next hyperparameter and iteration count by balancing expected improvement (utility) against estimated computation cost.
+
+# GitHub URLs List
+['https://github.com/ntienvu/BOIL']
+Output:
+{
+    "index": 0
+}
