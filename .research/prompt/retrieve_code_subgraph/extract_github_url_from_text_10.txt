@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+DNN-MFBO constructs a multi-fidelity model by stacking a set of deep neural networks, where each NN models one fidelity. For fidelities m > 1, the input to the NN is the concatenation of the original input and the output from the previous fidelity, allowing information propagation and capturing complex inter-fidelity relationships. The model assumes output layer weights (wm) as random variables with Gaussian priors and other NN weights (θm) as hyper-parameters. A stochastic variational learning algorithm is developed to jointly estimate the posterior distribution of the random weights and the hyper-parameters by maximizing an analytically intractable Evidence Lower Bound (ELBO) using the reparameterization trick. For optimization, a Max-Value Entropy Search (MES) acquisition function is used, which is defined as the mutual information between the objective function's maximum and the function output at a given fidelity, normalized by query cost. The output posterior distributions for each fidelity are approximated as Gaussian via fidelity-wise moment matching and Gauss-Hermite quadrature. The conditional entropy term in the acquisition function is approximated using Monte-Carlo sampling for function maxima (f*) and further approximated by considering the entropy given fM(x) <= f*, where fM(x) is the highest fidelity output. This conditional entropy is also computed using Gauss-Hermite quadrature and moment matching to achieve a Gaussian approximation. The acquisition function is optimized using L-BFGS with random initialization.
+
+# GitHub URLs List
+['https://github.com/kirthevasank/mf-gp-ucb', 'https://github.com/YehongZ/MixedTypeBO', 'https://github.com/zi-w/Max-value-Entropy-Search', 'https://github.com/automl/SMAC3']
+Output:
+{
+    "index": 2
+}
