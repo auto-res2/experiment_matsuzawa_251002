@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+The hyperparameter optimization problem is framed as a bi-level optimization problem, where an outer loop optimizes a criterion (e.g., hold-out loss, SURE) w.r.t. hyperparameters (λ) and an inner loop computes Lasso-type regression coefficients (β̂(λ)). The core innovation lies in computing the weak Jacobian (∂β̂/∂λ) efficiently. Unlike standard implicit differentiation that relies on optimality conditions for smooth functions and requires solving a p×p linear system, this method leverages the fixed-point iteration property of proximal BCD algorithms for Lasso (which involve soft-thresholding). The authors derive sparse closed-form solutions for the Jacobian of Lasso and weighted Lasso (Proposition 1). The proposed algorithm, termed 'implicit forward iterative differentiation' (Algorithm 2), first computes the regression coefficients and identifies their support, then applies a modified forward differentiation recursion restricted to this support. This decouples computation, avoids large matrix inversions, and guarantees linear convergence of the Jacobian once the support is identified (Proposition 2). Hyperparameters are parametrized as e^λ to handle positivity constraints and scaling. For SURE, a weakly differentiable approximation based on Finite Differences Monte-Carlo (dof_FDMC) is used.
+
+# GitHub URLs List
+['https://github.com/QB3/sparse-ho', 'https://github.com/fabianp/hoag', 'https://github.com/SMTorg/smt']
+Output:
+{
+    "index": 0
+}
