@@ -6,5 +6,82 @@
     "multi-fidelity hyperparameter optimization",
     "gradient-based hyperparameter tuning",
     "parallel hyperparameter optimization"
+  ],
+  "research_study_list": [
+    {
+      "title": "Bayesian Optimization for Iterative Learning"
+    },
+    {
+      "title": "Hyperparameter Optimization through Neural Network Partitioning"
+    },
+    {
+      "title": "Implicit differentiation of Lasso-type models for hyperparameter optimization"
+    },
+    {
+      "title": "A New Linear Scaling Rule for Private Adaptive Hyperparameter Optimization"
+    },
+    {
+      "title": "Efficient Hyperparameter Optimization with Adaptive Fidelity Identification"
+    },
+    {
+      "title": "Efficient Hyperparameter Optimization with Adaptive Fidelity Identification"
+    },
+    {
+      "title": "Bayesian Optimization for Iterative Learning"
+    },
+    {
+      "title": "Scaling Laws for Hyperparameter Optimization"
+    },
+    {
+      "title": "Deep Ranking Ensembles for Hyperparameter Optimization"
+    },
+    {
+      "title": "PASHA: Efficient HPO and NAS with Progressive Resource Allocation"
+    },
+    {
+      "title": "Multi-Fidelity Bayesian Optimization via Deep Neural Networks"
+    },
+    {
+      "title": "Efficient Hyperparameter Optimization with Adaptive Fidelity Identification"
+    },
+    {
+      "title": "Batch Multi-Fidelity Bayesian Optimization with  Deep Auto-Regressive Networks"
+    },
+    {
+      "title": "Supervising the Multi-Fidelity Race of Hyperparameter Configurations"
+    },
+    {
+      "title": "Supervising the Multi-Fidelity Race of Hyperparameter Configurations"
+    },
+    {
+      "title": "Learning to Mutate with Hypergradient Guided Population"
+    },
+    {
+      "title": "Gradient Descent: The Ultimate Optimizer"
+    },
+    {
+      "title": "Stochastic Marginal Likelihood Gradients using Neural Tangent Kernels"
+    },
+    {
+      "title": "Implicit differentiation of Lasso-type models for hyperparameter optimization"
+    },
+    {
+      "title": "AUTOMATA: Gradient Based Data Subset Selection for Compute-Efficient Hyper-parameter Tuning"
+    },
+    {
+      "title": "Differentiable Expected Hypervolume Improvement for Parallel Multi-Objective Bayesian Optimization"
+    },
+    {
+      "title": "Hyperparameter Optimization through Neural Network Partitioning"
+    },
+    {
+      "title": "Federated Hyperparameter Tuning: Challenges, Baselines, and Connections to Weight-Sharing"
+    },
+    {
+      "title": "Reshuffling Resampling Splits Can Improve Generalization of Hyperparameter Optimization"
+    },
+    {
+      "title": "DP-HyPO: An Adaptive Private Framework for Hyperparameter Optimization"
+    }
   ]
 }
