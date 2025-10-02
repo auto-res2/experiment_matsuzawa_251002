@@ -1,0 +1,1734 @@
+
+Input:
+You are a researcher with expertise in engineering in the field of machine learning.
+
+# Instructions
+- The content described in “Repository Content” corresponds to the GitHub repository of the method described in “Method.”
+- Please extract the following two pieces of information from “Repository Content”:
+    - experimental_code：Extract the implementation sections that are directly related to the method described in “Method.”
+    - experimental_info：Extract and output the experimental settings related to the method described in “Method.”
+
+# Method
+DyHPO employs a Gaussian Process (GP) surrogate model with a novel deep kernel. This deep kernel (K) uses a neural network (φ) to process the hyperparameter configuration (x), current budget (j), and the past learning curve (Y). The network φ concatenates a linear transformation of normalized budget and hyperparameter configuration with a one-dimensional convolution and max pooling of the learning curve. A squared exponential kernel (k) is then applied to the output of φ. The model parameters are optimized via maximum likelihood using Adam. DyHPO extends Expected Improvement (EI) to Multi-Fidelity Expected Improvement (EIMF), which dynamically selects the next configuration and budget (incrementing by one step) to train based on the surrogate's predictions, prioritizing exploration by slowly increasing the budget.
+
+# Repository Content
+File Path: benchmarks/__init__.py
+Content:
+
+File Path: benchmarks/benchmark.py
+Content:
+class BaseBenchmark:
+
+    def __init__(self, path_to_json_file: str):
+
+        self.path_to_json_file = path_to_json_file
+
+    def _load_benchmark(self):
+
+        raise NotImplementedError('Please implement the load_benchmark method')
+
+    def load_dataset_names(self):
+        raise NotImplementedError('Please implement the load_dataset_names method')
+
+    def get_hyperparameter_candidates(self):
+
+        raise NotImplementedError('Please extend the get_hyperparameter_candidates method')
+
+    def get_performance(self, hp_index: int, budget: int):
+
+        raise NotImplementedError('Please extend the get_performance method')
+
+File Path: benchmarks/lcbench.py
+Content:
+from collections import OrderedDict
+from typing import List
+
+import numpy as np
+
+from benchmarks.benchmark import BaseBenchmark
+from lc_bench.api import Benchmark
+
+
+class LCBench(BaseBenchmark):
+
+    nr_hyperparameters = 2000
+    # Declaring the search space for LCBench
+    param_space = OrderedDict([
+        ('batch_size', [16, 512, int, True]),
+        ('learning_rate', [0.0001, 0.1, float, True]),
+        ('momentum', [0.1, 0.99, float, False]),
+        ('weight_decay', [0.00001, 0.1, float, False]),
+        ('num_layers', [1, 5, int, False]),
+        ('max_units', [64, 1024, int, True]),
+        ('max_dropout', [0.0, 1.0, float, False]),
+    ])
+    max_budget = 51
+
+    log_indicator = [True, True, False, False, False, True, False]
+
+    def __init__(self, path_to_json_file: str, dataset_name: str):
+
+        super().__init__(path_to_json_file)
+        self.benchmark = self._load_benchmark()
+        self.dataset_name = dataset_name
+        self.dataset_names = self.load_dataset_names()
+
+    def get_worst_performance(self):
+
+        # since it is accuracy for LCBench
+        min_value = 100
+        for hp_index in range(0, LCBench.nr_hyperparameters):
+            val_curve = self.benchmark.query(
+                dataset_name=self.dataset_name,
+                config_id=hp_index,
+                tag='Train/val_balanced_accuracy',
+            )
+            val_curve = val_curve[1:]
+            worst_performance_hp_curve = min(val_curve)
+            if worst_performance_hp_curve < min_value:
+                min_value = worst_performance_hp_curve
+
+        return min_value
+
+    def _load_benchmark(self):
+
+        bench = Benchmark(
+            data_dir=self.path_to_json_file,
+        )
+
+        return bench
+
+    def load_dataset_names(self) -> List[str]:
+
+        return self.benchmark.get_dataset_names()
+
+    def get_hyperparameter_candidates(self) -> np.ndarray:
+
+        hp_names = list(LCBench.param_space.keys())
+        hp_configs = []
+        for i in range(LCBench.nr_hyperparameters):
+            hp_config = []
+            config = self.benchmark.query(
+                dataset_name=self.dataset_name,
+                tag='config',
+                config_id=i,
+            )
+            for hp_name in hp_names:
+                hp_config.append(config[hp_name])
+            hp_configs.append(hp_config)
+
+        hp_configs = np.array(hp_configs)
+
+        return hp_configs
+
+    def get_performance(self, hp_index: int, budget: int) -> float:
+
+        val_curve = self.benchmark.query(
+            dataset_name=self.dataset_name,
+            config_id=hp_index,
+            tag='Train/val_balanced_accuracy',
+        )
+        val_curve = val_curve[1:]
+        budget = int(budget)
+
+        return val_curve[budget - 1]
+
+    def get_curve(self, hp_index: int, budget: int) -> List[float]:
+
+        val_curve = self.benchmark.query(
+            dataset_name=self.dataset_name,
+            config_id=hp_index,
+            tag='Train/val_balanced_accuracy',
+        )
+        val_curve = val_curve[1:]
+        budget = int(budget)
+
+        return val_curve[0:budget]
+
+    def get_incumbent_curve(self):
+
+        inc_curve = self.benchmark.query_best(
+            self.dataset_name,
+            "Train/val_balanced_accuracy",
+            "Train/val_balanced_accuracy",
+            0,
+        )
+        inc_curve = inc_curve[1:]
+        return inc_curve
+
+    def get_incumbent_config_id(self):
+
+        best_value = 0
+        best_index = -1
+        for index in range(0, LCBench.nr_hyperparameters):
+            val_curve = self.benchmark.query(
+                dataset_name=self.dataset_name,
+                config_id=index,
+                tag='Train/val_balanced_accuracy',
+            )
+            max_value = max(val_curve)
+
+            if max_value > best_value:
+                best_value = max_value
+                best_index = index
+
+        return best_index
+
+    def get_gap_performance(self):
+
+        incumbent_curve = self.get_incumbent_curve()
+        best_value = max(incumbent_curve)
+        worst_value = self.get_worst_performance()
+
+        return best_value - worst_value
+
+    def get_step_cost(self, hp_index: int, budget: int):
+
+        time_cost_curve = self.benchmark.query(
+            dataset_name=self.dataset_name,
+            config_id=hp_index,
+            tag='time',
+        )
+        time_cost_curve = time_cost_curve[1:]
+        budget = int(budget)
+        if budget > 1:
+            step_cost = time_cost_curve[budget - 1] - time_cost_curve[budget - 2]
+        else:
+            step_cost = time_cost_curve[budget - 1]
+
+        return step_cost
+
+    def set_dataset_name(self, dataset_name: str):
+
+        self.dataset_name = dataset_name
+
+
+File Path: benchmarks/taskset.py
+Content:
+import json
+import os
+from typing import List
+
+import numpy as np
+import pandas as pd
+
+from benchmarks.benchmark import BaseBenchmark
+
+
+class TaskSet(BaseBenchmark):
+
+    nr_hyperparameters = 1000
+    max_budget = 51
+    hp_names = [
+        'learning_rate',
+        'beta1',
+        'beta2',
+        'epsilon',
+        'l1',
+        'l2',
+        'linear_decay',
+        'exponential_decay',
+    ]
+
+    log_indicator = [True, False, False, False, True, True, True, True]
+
+    def __init__(self, path_to_json_files: str, dataset_name: str):
+
+        super().__init__(path_to_json_files)
+        self.dataset_name = dataset_name
+        self.hp_candidates = []
+        self.training_curves = []
+        self.validation_curves = []
+        self.test_curves = []
+        self.min_value = 0
+        self.max_value = 0
+
+        self._load_benchmark()
+        #self.validation_curves = self.log_transform_labels()
+        filtered_indices = self.filter_curves()
+        self.validation_curves = np.array(self.validation_curves)
+        self.validation_curves = self.validation_curves[filtered_indices]
+        self.hp_candidates = np.array(self.hp_candidates)
+        self.hp_candidates = self.hp_candidates[filtered_indices]
+
+
+    def get_worst_performance(self):
+
+        # for taskset we have loss, so the worst value is infinity
+        min_value = np.inf
+        for hp_index in range(0, self.validation_curves.shape[0]):
+            val_curve = self.validation_curves[hp_index]
+            worst_performance_hp_curve = max(val_curve)
+            if worst_performance_hp_curve < min_value:
+                min_value = worst_performance_hp_curve
+
+        return min_value
+
+    def _load_benchmark(self):
+
+        dataset_file = os.path.join(self.path_to_json_file, f'{self.dataset_name}.json')
+
+        with open(dataset_file, 'r') as fp:
+            dataset_info = json.load(fp)
+
+        for optimization_iteration in dataset_info:
+            hp_configuration = optimization_iteration['hp']
+            train_curve = optimization_iteration['train']['loss']
+            validation_curve = optimization_iteration['valid']['loss']
+            test_curve = optimization_iteration['test']['loss']
+
+            # keep a fixed order for the hps and their values,
+            # just in case
+            new_hp_configuration = []
+            for hp_name in self.hp_names:
+                new_hp_configuration.append(hp_configuration[hp_name])
+            self.hp_candidates.append(new_hp_configuration)
+            self.training_curves.append(train_curve)
+            self.validation_curves.append(validation_curve)
+            self.test_curves.append(test_curve)
+
+    def load_dataset_names(self) -> List[str]:
+
+        dataset_file_names = [
+            dataset_file_name for dataset_file_name in os.listdir(self.path_to_json_file)
+            if os.path.isfile(os.path.join(self.path_to_json_file, dataset_file_name))
+        ]
+
+        return dataset_file_names
+
+    def get_hyperparameter_candidates(self) -> np.ndarray:
+
+        return np.array(self.hp_candidates)
+
+    def get_performance(self, hp_index: int, budget: int) -> float:
+
+        val_curve = self.validation_curves[hp_index]
+
+        budget = int(budget)
+
+        return val_curve[budget - 1]
+
+    def get_curve(self, hp_index: int, budget: int) -> float:
+
+        val_curve = self.validation_curves[hp_index]
+
+        budget = int(budget)
+
+        return val_curve[0:budget].tolist()
+
+    def get_incumbent_curve(self):
+
+        best_value = np.inf
+        best_index = -1
+        for index in range(0, self.validation_curves.shape[0]):
+            val_curve = self.validation_curves[index]
+            min_loss = min(val_curve)
+
+            if min_loss < best_value:
+                best_value = min_loss
+                best_index = index
+
+        return self.validation_curves[best_index]
+
+    def get_incumbent_config_index(self):
+
+        best_value = np.inf
+        best_index = -1
+        for index in range(0, self.validation_curves.shape[0]):
+            val_curve = self.validation_curves[index]
+            min_loss = min(val_curve)
+
+            if min_loss < best_value:
+                best_value = min_loss
+                best_index = index
+
+        return best_index
+
+    def log_transform_labels(self):
+
+        validation_curves = np.array(self.validation_curves).flatten()
+        max_value = np.amax(validation_curves)
+        min_value = np.amin(validation_curves)
+        self.max_value = max_value
+        self.min_value = min_value
+
+        f = lambda x: (np.log(x) - np.log(min_value)) / (np.log(max_value) - np.log(min_value))
+
+        log_transformed_values = f(self.validation_curves)
+
+        return log_transformed_values.tolist()
+
+    def filter_curves(self):
+
+        validation_curves = np.array(self.validation_curves)
+        validation_curves = pd.DataFrame(validation_curves)
+        # TODO do a query for both values instead of going through the df twice
+        non_nan_idx = validation_curves.notnull().all(axis=1)
+        non_diverging_idx = (validation_curves < validation_curves.quantile(0.95).min()).all(axis=1)
+
+        idx = non_nan_idx & non_diverging_idx
+
+        return idx
+
+File Path: data_loader/__init__.py
+Content:
+
+File Path: data_loader/tabular_data_loader.py
+Content:
+class WrappedDataLoader:
+    def __init__(self, dl, dev):
+        self.dl = dl
+        self.device = dev
+
+    def __len__(self):
+        return len(self.dl)
+
+    def __iter__(self):
+        batches = iter(self.dl)
+        for b in batches:
+            yield b[0].to(self.device), b[1].to(self.device), b[2].to(self.device), b[3].to(self.device)
+
+File Path: dataset/__init__.py
+Content:
+
+File Path: dataset/tabular_dataset.py
+Content:
+from torch.utils.data import Dataset
+
+
+class TabularDataset(Dataset):
+
+    def __init__(self, X, y, budgets, learning_curves):
+        self.X = X
+        self.y = y
+        self.budgets = budgets
+        self.learning_curves = learning_curves
+
+    def __len__(self):
+        return self.y.size
+
+    def __getitem__(self, idx):
+
+        return self.X[idx], self.y[idx], self.budgets[idx], self.learning_curves[idx]
+
+
+
+
+
+File Path: hpo_method.py
+Content:
+import copy
+import json
+import logging
+import math
+import os
+import time
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from scipy.stats import norm, t
+import torch
+
+from surrogate_models.dyhpo import DyHPO
+
+
+class DyHPOAlgorithm:
+
+    def __init__(
+        self,
+        hp_candidates: np.ndarray,
+        log_indicator: List,
+        seed: int = 11,
+        max_benchmark_epochs: int = 52,
+        fantasize_step: int = 1,
+        minimization: bool = True,
+        total_budget: int = 500,
+        device: str = None,
+        dataset_name: str = 'unknown',
+        output_path: str = '.',
+        surrogate_config: dict = None,
+        verbose: bool = True,
+    ):
+        """
+        Args:
+            hp_candidates: np.ndarray
+                The full list of hyperparameter candidates for
+                a given dataset.
+            log_indicator: List
+                A list with boolean values indicating if a
+                hyperparameter has been log sampled or not.
+            seed: int
+                The seed that will be used for the surrogate.
+            max_benchmark_epochs: int
+                The maximal budget that a hyperparameter configuration
+                has been evaluated in the benchmark for.
+            fantasize_step: int
+                The number of steps for which we are looking ahead to
+                evaluate the performance of a hpc.
+            minimization: bool
+                If the objective should be maximized or minimized.
+            total_budget: int
+                The total budget given for hyperparameter optimization.
+            device: str
+                The device where the experiment will be run on.
+            dataset_name: str
+                The name of the dataset that the experiment will be run on.
+            output_path: str
+                The path where all the output will be stored.
+            surrogate_config: dict
+                The model configurations for the surrogate.
+            verbose: boolean
+                If detailed information is preferred in the log file.
+        """
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+
+        if device is None:
+            self.dev = torch.device(
+                'cuda') if torch.cuda.is_available() else torch.device('cpu')
+        else:
+            self.dev = torch.device(device)
+
+        self.hp_candidates = hp_candidates
+        self.log_indicator = log_indicator
+
+        self.scaler = MinMaxScaler()
+        self.hp_candidates = self.preprocess_hp_candidates()
+
+        self.minimization = minimization
+        self.seed = seed
+
+        if verbose:
+            logging_level = logging.DEBUG
+        else:
+            logging_level = logging.INFO
+        self.logger = logging.getLogger()
+
+        logging.basicConfig(
+            format='%(levelname)s:%(asctime)s:%(message)s',
+            filename=f'dyhpo_surrogate_{dataset_name}_{seed}.log',
+            level=logging_level,
+        )
+
+        # the keys will be hyperparameter indices while the value
+        # will be a list with all the budgets evaluated for examples
+        # and with all performances for the performances
+        self.examples = dict()
+        self.performances = dict()
+
+        # set a seed already, so that it is deterministic when
+        # generating the seeds of the ensemble
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+
+        self.max_benchmark_epochs = max_benchmark_epochs
+        self.total_budget = total_budget
+        self.fantasize_step = fantasize_step
+        self.nr_features = self.hp_candidates.shape[1]
+
+        initial_configurations_nr = 1
+        conf_individual_budget = 1
+        self.init_conf_indices = np.random.choice(self.hp_candidates.shape[0], initial_configurations_nr, replace=False)
+        self.init_budgets = [conf_individual_budget] * initial_configurations_nr
+        # with what percentage configurations will be taken randomly instead of being sampled from the model
+        self.fraction_random_configs = 0.1
+
+        self.model = None
+        # An index keeping track of where we are in the init_conf_indices
+        # list of hyperparmeters that are not sampled from the model.
+        self.initial_random_index = 0
+
+        if surrogate_config is None:
+            self.surrogate_config = {
+                'nr_layers': 2,
+                'nr_initial_features': self.nr_features,
+                'layer1_units': 64,
+                'layer2_units': 128,
+                'cnn_nr_channels': 4,
+                'cnn_kernel_size': 3,
+                'batch_size': 64,
+                'nr_epochs': 1000,
+                'nr_patience_epochs': 10,
+                'learning_rate': 0.001,
+            }
+        else:
+            self.surrogate_config = surrogate_config
+
+        # the incumbent value observed during the hpo process.
+        self.best_value_observed = np.NINF
+        # a set which will keep track of the hyperparameter configurations that diverge.
+        self.diverged_configs = set()
+
+        # info dict to drop every surrogate iteration
+        self.info_dict = dict()
+
+        # the start time for the overhead of every surrogate optimization iteration
+        # will be recorded here
+        self.suggest_time_duration = 0
+        # the total budget consumed so far
+        self.budget_spent = 0
+
+        self.output_path = output_path
+        self.dataset_name = dataset_name
+
+        self.no_improvement_threshold = int(self.max_benchmark_epochs + 0.2 * self.max_benchmark_epochs)
+        self.no_improvement_patience = 0
+
+
+    def _prepare_dataset_and_budgets(self) -> Dict[str, torch.Tensor]:
+        """
+        Prepare the data that will be the input to the surrogate.
+
+        Returns:
+            data: A Dictionary that contains inside the training examples,
+            the budgets, the curves and lastly the labels.
+        """
+
+        train_examples, train_labels, train_budgets, train_curves = self.history_configurations()
+
+        train_examples = np.array(train_examples, dtype=np.single)
+        train_labels = np.array(train_labels, dtype=np.single)
+        train_budgets = np.array(train_budgets, dtype=np.single)
+        train_curves = self.patch_curves_to_same_length(train_curves)
+        train_curves = np.array(train_curves, dtype=np.single)
+
+        # scale budgets to [0, 1]
+        train_budgets = train_budgets / self.max_benchmark_epochs
+
+        train_examples = torch.tensor(train_examples)
+        train_labels = torch.tensor(train_labels)
+        train_budgets = torch.tensor(train_budgets)
+        train_curves = torch.tensor(train_curves)
+
+        train_examples = train_examples.to(device=self.dev)
+        train_labels = train_labels.to(device=self.dev)
+        train_budgets = train_budgets.to(device=self.dev)
+        train_curves = train_curves.to(device=self.dev)
+
+        data = {
+            'X_train': train_examples,
+            'train_budgets': train_budgets,
+            'train_curves': train_curves,
+            'y_train': train_labels,
+        }
+
+        return data
+
+    def _train_surrogate(self):
+        """
+        Train the surrogate model.
+        """
+        data = self._prepare_dataset_and_budgets()
+        self.logger.info(f'Started training the model')
+
+        self.model.train_pipeline(
+            data,
+            load_checkpoint=False,
+        )
+
+    def _predict(self) -> Tuple[np.ndarray, np.ndarray, List, List]:
+        """
+        Predict the performances of the hyperparameter configurations
+        as well as the standard deviations based on the surrogate model.
+
+        Returns:
+            mean_predictions, std_predictions, hp_indices, non_scaled_budgets:
+                The mean predictions and the standard deviations over
+                all model predictions for the given hyperparameter
+                configurations with their associated indices, scaled and
+                non-scaled budgets.
+        """
+        configurations, hp_indices, budgets, learning_curves = self.generate_candidate_configurations()
+        budgets = np.array(budgets, dtype=np.single)
+        non_scaled_budgets = copy.deepcopy(budgets)
+        # scale budgets to [0, 1]
+        budgets = budgets / self.max_benchmark_epochs
+
+        configurations = np.array(configurations, dtype=np.single)
+        configurations = torch.tensor(configurations)
+        configurations = configurations.to(device=self.dev)
+
+        budgets = torch.tensor(budgets)
+        budgets = budgets.to(device=self.dev)
+
+        learning_curves = self.patch_curves_to_same_length(learning_curves)
+        learning_curves = np.array(learning_curves, dtype=np.single)
+        learning_curves = torch.tensor(learning_curves)
+        learning_curves = learning_curves.to(device=self.dev)
+
+        train_data = self._prepare_dataset_and_budgets()
+        test_data = {
+            'X_test': configurations,
+            'test_budgets': budgets,
+            'test_curves': learning_curves,
+        }
+
+        mean_predictions, std_predictions = self.model.predict_pipeline(train_data, test_data)
+
+        return mean_predictions, std_predictions, hp_indices, non_scaled_budgets
+
+    def suggest(self) -> Tuple[int, int]:
+        """
+        Suggest a hyperparameter configuration to be evaluated next.
+
+        Returns:
+            best_config_index, budget: The index of the hyperparamter
+                configuration to be evaluated and the budget for
+                what it is going to be evaluated for.
+        """
+        suggest_time_start = time.time()
+        # check if we still have random hyperparameters to evaluate
+        if self.initial_random_index < len(self.init_conf_indices):
+            self.logger.info(
+                'Not enough configurations to build a model. '
+                'Returning randomly sampled configuration'
+            )
+
+            random_indice = self.init_conf_indices[self.initial_random_index]
+            budget = self.init_budgets[self.initial_random_index]
+            self.initial_random_index += 1
+
+            return random_indice, budget
+        else:
+            mean_predictions, std_predictions, hp_indices, non_scaled_budgets = self._predict()
+            best_prediction_index = self.find_suggested_config(
+                mean_predictions,
+                std_predictions,
+                non_scaled_budgets,
+            )
+            """
+            the best prediction index is not always matching with the actual hp index.
+            Since when evaluating the acq function, we do not consider hyperparameter
+            candidates that diverged or that are evaluated fully.
+            """
+            best_config_index = hp_indices[best_prediction_index]
+
+            # decide for what budget we will evaluate the most
+            # promising hyperparameter configuration next.
+            if best_config_index in self.examples:
+                evaluated_budgets = self.examples[best_config_index]
+                max_budget = max(evaluated_budgets)
+                budget = max_budget + self.fantasize_step
+                # this would only trigger if fantasize_step is bigger
+                # than 1
+                if budget > self.max_benchmark_epochs:
+                    budget = self.max_benchmark_epochs
+            else:
+                budget = self.fantasize_step
+
+        suggest_time_end = time.time()
+        self.suggest_time_duration = suggest_time_end - suggest_time_start
+
+        self.budget_spent += self.fantasize_step
+
+        # exhausted hpo budget, finish.
+        if self.budget_spent > self.total_budget:
+            exit(0)
+
+        return best_config_index, budget
+
+    def observe(
+        self,
+        hp_index: int,
+        b: int,
+        learning_curve: np.ndarray,
+        alg_time: Optional[float] = None,
+    ):
+        """
+        Args:
+            hp_index: The index of the evaluated hyperparameter configuration.
+            b: The budget for which the hyperparameter configuration was evaluated.
+            learning_curve: The learning curve of the hyperparameter configuration.
+            alg_time: The time taken from the algorithm to evaluate the hp configuration.
+        """
+        score = learning_curve[-1]
+        # if y is an undefined value, append 0 as the overhead since we finish here.
+        if np.isnan(learning_curve).any():
+            self.update_info_dict(hp_index, b, np.nan, 0)
+            self.diverged_configs.add(hp_index)
+            return
+
+        observe_time_start = time.time()
+
+        self.examples[hp_index] = np.arange(1, b + 1).tolist()
+        self.performances[hp_index] = learning_curve
+
+        if self.best_value_observed < score:
+            self.best_value_observed = score
+            self.no_improvement_patience = 0
+        else:
+            self.no_improvement_patience += 1
+
+        observe_time_end = time.time()
+        train_time_duration = 0
+
+        # initialization phase over. Now we can sample from the model.
+        if self.initial_random_index >= len(self.init_conf_indices):
+            train_time_start = time.time()
+            # create the model for the first time
+            if self.model is None:
+                # Starting a model from scratch
+                self.model = DyHPO(
+                    self.surrogate_config,
+                    self.dev,
+                    self.dataset_name,
+                    self.output_path,
+                    self.seed,
+                )
+
+            if self.no_improvement_patience == self.no_improvement_threshold:
+                self.model.restart = True
+
+            self._train_surrogate()
+
+            train_time_end = time.time()
+            train_time_duration = train_time_end - train_time_start
+
+        observe_time_duration = observe_time_end - observe_time_start
+        total_duration = observe_time_duration + self.suggest_time_duration + train_time_duration
+        if alg_time is not None:
+            total_duration = total_duration + alg_time
+
+        self.update_info_dict(hp_index, b, score, total_duration)
+
+    def prepare_examples(self, hp_indices: List) -> List[np.ndarray]:
+        """
+        Prepare the examples to be given to the surrogate model.
+
+        Args:
+            hp_indices: The list of hp indices that are already evaluated.
+
+        Returns:
+            examples: A list of the hyperparameter configurations.
+        """
+        examples = []
+        for hp_index in hp_indices:
+            examples.append(self.hp_candidates[hp_index])
+
+        return examples
+
+    def generate_candidate_configurations(
+        self,
+    ) -> Tuple[List, List, List, List]:
+        """
+        Generate candidate configurations that will be
+        fantasized upon.
+
+        Returns:
+            (configurations, hp_indices, hp_budgets, learning_curves): Tuple
+                A tuple of configurations, their indices in the hp list
+                and the budgets that they should be fantasized upon.
+        """
+        hp_indices = []
+        hp_budgets = []
+        learning_curves = []
+
+        for hp_index in range(0, self.hp_candidates.shape[0]):
+
+            if hp_index in self.examples:
+                budgets = self.examples[hp_index]
+                # Take the max budget evaluated for a certain hpc
+                max_budget = max(budgets)
+                next_budget = max_budget + self.fantasize_step
+                # take the learning curve until the point we have evaluated so far
+                curve = self.performances[hp_index][:max_budget]
+                # if the curve is shorter than the length of the kernel size,
+                # pad it with zeros
+                difference_curve_length = self.surrogate_config['cnn_kernel_size'] - len(curve)
+                if difference_curve_length > 0:
+                    curve.extend([0.0] * difference_curve_length)
+            else:
+                # The hpc was not evaluated before, so fantasize its
+                # performance
+                next_budget = self.fantasize_step
+                curve = [0, 0, 0]
+
+            # this hyperparameter configuration is not evaluated fully
+            if next_budget <= self.max_benchmark_epochs:
+                hp_indices.append(hp_index)
+                hp_budgets.append(next_budget)
+                learning_curves.append(curve)
+
+        configurations = self.prepare_examples(hp_indices)
+
+        return configurations, hp_indices, hp_budgets, learning_curves
+
+    def history_configurations(
+        self,
+    ) -> Tuple[List, List, List, List]:
+        """
+        Generate the configurations, labels, budgets and curves based on
+        the history of evaluated configurations.
+
+        Returns:
+            (train_examples, train_labels, train_budgets, train_curves):
+                A tuple of examples, labels, budgets and curves for the
+                configurations evaluated so far.
+        """
+        train_examples = []
+        train_labels = []
+        train_budgets = []
+        train_curves = []
+
+        for hp_index in self.examples:
+            budgets = self.examples[hp_index]
+            performances = self.performances[hp_index]
+            example = self.hp_candidates[hp_index]
+
+            for budget, performance in zip(budgets, performances):
+                train_examples.append(example)
+                train_budgets.append(budget)
+                train_labels.append(performance)
+                train_curve = performances[:budget - 1] if budget > 1 else [0.0]
+                difference_curve_length = self.surrogate_config['cnn_kernel_size'] - len(train_curve)
+                if difference_curve_length > 0:
+                    train_curve.extend([0.0] * difference_curve_length)
+
+                train_curves.append(train_curve)
+
+        return train_examples, train_labels, train_budgets, train_curves
+
+    def acq(
+        self,
+        best_value: float,
+        mean: float,
+        std: float,
+        explore_factor: Optional[float] = 0.25,
+        acq_fc: str = 'ei',
+    ) -> float:
+        """
+        The acquisition function that will be called
+        to evaluate the score of a hyperparameter configuration.
+
+        Parameters
+        ----------
+        best_value: float
+            Best observed function evaluation. Individual per fidelity.
+        mean: float
+            Point mean of the posterior process.
+        std: float
+            Point std of the posterior process.
+        explore_factor: float
+            The exploration factor for when ucb is used as the
+            acquisition function.
+        ei_calibration_factor: float
+            The factor used to calibrate expected improvement.
+        acq_fc: str
+            The type of acquisition function to use.
+
+        Returns
+        -------
+        acq_value: float
+            The value of the acquisition function.
+        """
+        if acq_fc == 'ei':
+            if std == 0:
+                return 0
+            z = (mean - best_value) / std
+            acq_value = (mean - best_value) * norm.cdf(z) + std * norm.pdf(z)
+        elif acq_fc == 'ucb':
+            acq_value = mean + explore_factor * std
+        elif acq_fc == 'thompson':
+            acq_value = np.random.normal(mean, std)
+        elif acq_fc == 'exploit':
+            acq_value = mean
+        else:
+            raise NotImplementedError(
+                f'Acquisition function {acq_fc} has not been'
+                f'implemented',
+            )
+
+        return acq_value
+
+    def find_suggested_config(
+        self,
+        mean_predictions: np.ndarray,
+        mean_stds: np.ndarray,
+        budgets: List,
+    ) -> int:
+        """
+        Find the hyperparameter configuration that has the highest score
+        with the acquisition function.
+
+        Args:
+            mean_predictions: The mean predictions of the posterior.
+            mean_stds: The mean standard deviations of the posterior.
+            budgets: The next budgets that the hyperparameter configurations
+                will be evaluated for.
+
+        Returns:
+            best_index: The index of the hyperparameter configuration with the
+                highest score.
+        """
+        highest_acq_value = np.NINF
+        best_index = -1
+
+        index = 0
+        for mean_value, std in zip(mean_predictions, mean_stds):
+            budget = int(budgets[index])
+            best_value = self.calculate_fidelity_ymax(budget)
+            acq_value = self.acq(best_value, mean_value, std, acq_fc='ei')
+            if acq_value > highest_acq_value:
+                highest_acq_value = acq_value
+                best_index = index
+
+            index += 1
+
+        return best_index
+
+    def calculate_fidelity_ymax(self, fidelity: int):
+        """
+        Find ymax for a given fidelity level.
+
+        If there are hyperparameters evaluated for that fidelity
+        take the maximum from their values. Otherwise, take
+        the maximum from all previous fidelity levels for the
+        hyperparameters that we have evaluated.
+
+        Args:
+            fidelity: The fidelity of the hyperparameter
+                configuration.
+
+        Returns:
+            best_value: The best value seen so far for the
+                given fidelity.
+        """
+        exact_fidelity_config_values = []
+        lower_fidelity_config_values = []
+
+        for example_index in self.examples.keys():
+            try:
+                performance = self.performances[example_index][fidelity - 1]
+                exact_fidelity_config_values.append(performance)
+            except IndexError:
+                learning_curve = self.performances[example_index]
+                # The hyperparameter was not evaluated until fidelity, or more.
+                # Take the maximum value from the curve.
+                lower_fidelity_config_values.append(max(learning_curve))
+
+        if len(exact_fidelity_config_values) > 0:
+            # lowest error corresponds to best value
+            best_value = max(exact_fidelity_config_values)
+        else:
+            best_value = max(lower_fidelity_config_values)
+
+        return best_value
+
+    def update_info_dict(
+        self,
+        hp_index: int,
+        budget: int,
+        performance: float,
+        overhead: float,
+    ):
+        """
+        Update the info dict with the current HPO iteration info.
+
+        Dump a new json file that will update with additional information
+        given the current HPO iteration.
+
+        Args:
+            hp_index: The index of the hyperparameter configuration.
+            budget: The budget of the hyperparameter configuration.
+            performance:  The performance of the hyperparameter configuration.
+            overhead: The total overhead (in seconds) of the iteration.
+        """
+        hp_index = int(hp_index)
+        if 'hp' in self.info_dict:
+            self.info_dict['hp'].append(hp_index)
+        else:
+            self.info_dict['hp'] = [hp_index]
+
+        if 'scores' in self.info_dict:
+            self.info_dict['scores'].append(performance)
+        else:
+            self.info_dict['scores'] = [performance]
+
+        if 'curve' in self.info_dict:
+            self.info_dict['curve'].append(self.best_value_observed)
+        else:
+            self.info_dict['curve'] = [self.best_value_observed]
+
+        if 'epochs' in self.info_dict:
+            self.info_dict['epochs'].append(budget)
+        else:
+            self.info_dict['epochs'] = [budget]
+
+        if 'overhead' in self.info_dict:
+            self.info_dict['overhead'].append(overhead)
+        else:
+            self.info_dict['overhead'] = [overhead]
+
+        with open(os.path.join(self.output_path, f'{self.dataset_name}_{self.seed}.json'), 'w') as fp:
+            json.dump(self.info_dict, fp)
+
+    def preprocess_hp_candidates(self) -> List:
+        """
+        Preprocess the list of all hyperparameter candidates
+        by  performing a log transform for the hyperparameters that
+        were log sampled.
+
+        Returns:
+            log_hp_candidates: The list of all hyperparameter configurations
+                where hyperparameters that were log sampled are log transformed.
+        """
+        log_hp_candidates = []
+
+        for hp_candidate in self.hp_candidates:
+            new_hp_candidate = []
+            for index, hp_value in enumerate(hp_candidate):
+                new_hp_candidate.append(math.log(hp_value) if self.log_indicator[index] else hp_value)
+
+            log_hp_candidates.append(new_hp_candidate)
+
+        log_hp_candidates = np.array(log_hp_candidates)
+        # scaler for the hp configurations
+
+        log_hp_candidates = self.scaler.fit_transform(log_hp_candidates)
+
+        return log_hp_candidates
+
+    @staticmethod
+    def patch_curves_to_same_length(curves):
+        """
+        Patch the given curves to the same length.
+
+        Finds the maximum curve length and patches all
+        other curves that are shorter in length with zeroes.
+
+        Args:
+            curves: The given hyperparameter curves.
+
+        Returns:
+            curves: The updated array where the learning
+                curves are of the same length.
+        """
+        max_curve_length = 0
+        for curve in curves:
+            if len(curve) > max_curve_length:
+                max_curve_length = len(curve)
+
+        for curve in curves:
+            difference = max_curve_length - len(curve)
+            if difference > 0:
+                curve.extend([0.0] * difference)
+
+        return curves
+
+File Path: main_experiment.py
+Content:
+import argparse
+import os
+import random
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+sns.set_style('white')
+
+from benchmarks.lcbench import LCBench
+from benchmarks.taskset import TaskSet
+
+from hpo_method import DyHPOAlgorithm
+
+
+parser = argparse.ArgumentParser(
+    description='DyHPO experiments.',
+)
+parser.add_argument(
+    '--index',
+    type=int,
+    default=1,
+)
+parser.add_argument(
+    '--fantasize_step',
+    type=int,
+    default=1,
+)
+parser.add_argument(
+    '--budget_limit',
+    type=int,
+    default=1000,
+)
+parser.add_argument(
+    '--dataset_name',
+    type=str,
+    default='covertype',
+)
+parser.add_argument(
+    '--benchmark_name',
+    type=str,
+    default='lcbench',
+)
+parser.add_argument(
+    '--project_dir',
+    type=str,
+    default='C:\\Users\\arlin\\Desktop\\DyHPO', #'/home/arlind/Desktop/DyHPO',
+)
+parser.add_argument(
+    '--output_dir',
+    type=str,
+    default='./output',
+)
+
+args = parser.parse_args()
+benchmark_name = args.benchmark_name
+dataset_name = args.dataset_name
+fantasize_step = args.fantasize_step
+budget_limit = args.budget_limit
+
+if benchmark_name == 'lcbench':
+    benchmark_extension = os.path.join(
+        'lc_bench',
+        'results',
+        'data_2k.json',
+    )
+elif benchmark_name == 'taskset':
+    benchmark_extension = os.path.join(
+        'data',
+        'taskset',
+    )
+else:
+    raise NotImplementedError('At the current version of the code only two benchmarks are supported')
+
+benchmark_data_path = os.path.join(
+    args.project_dir,
+    benchmark_extension,
+)
+
+seeds = np.arange(10)
+seed = seeds[args.index - 1]
+random.seed(seed)
+
+output_dir = os.path.join(
+    args.output_dir,
+    f'{benchmark_name}',
+    'dyhpo',
+)
+os.makedirs(output_dir, exist_ok=True)
+
+surrogate_types = {
+    'lcbench': LCBench,
+    'taskset': TaskSet,
+}
+
+minimization_problem_type = {
+    'lcbench': False,
+    'taskset': True,
+}
+
+minimization = minimization_problem_type[benchmark_name]
+
+benchmark = surrogate_types[benchmark_name](benchmark_data_path, dataset_name)
+
+min_value = 0
+max_value = 0
+
+if benchmark_name == 'taskset':
+    max_value = benchmark.max_value
+    min_value = benchmark.min_value
+
+dyhpo_surrogate = DyHPOAlgorithm(
+    benchmark.get_hyperparameter_candidates(),
+    benchmark.log_indicator,
+    seed=seed,
+    max_benchmark_epochs=benchmark.max_budget,
+    fantasize_step=fantasize_step,
+    minimization=minimization,
+    total_budget=budget_limit,
+    dataset_name=dataset_name,
+    output_path=output_dir,
+)
+
+evaluated_configs = dict()
+method_budget = 0
+incumbent = 0
+method_trajectory = []
+dyhpo_budgets = []
+
+while method_budget < budget_limit:
+
+    hp_index, budget = dyhpo_surrogate.suggest()
+    performance_curve = benchmark.get_curve(hp_index, budget)
+    score = performance_curve[-1]
+    dyhpo_surrogate.observe(hp_index, budget, performance_curve)
+    budget_cost = 0
+    if hp_index in evaluated_configs:
+        previous_budget = evaluated_configs[hp_index]
+        budget_cost = budget - previous_budget
+        evaluated_configs[hp_index] = budget
+    else:
+        budget_cost = fantasize_step
+
+    method_budget += budget_cost
+
+    if score > incumbent:
+        incumbent = score
+        method_trajectory.append(incumbent)
+        dyhpo_budgets.append(method_budget)
+
+random_budget = 0
+np.random.seed(seed)
+
+random_trajectory = []
+random_budgets = []
+incumbent = 0
+while random_budget < budget_limit:
+
+    config_index = np.random.randint(0, 2000)
+    performance = benchmark.get_performance(config_index, benchmark.max_budget)
+    random_budget += benchmark.max_budget
+    if performance > incumbent:
+        incumbent = performance
+        random_trajectory.append(incumbent)
+        random_budgets.append(random_budget)
+
+benchmark_incumbent_value = max(benchmark.get_incumbent_curve())
+regret_incumbent_trajectory_dyhpo = [benchmark_incumbent_value - inc_performance for inc_performance in method_trajectory]
+regret_incumbent_trajectory_random = [benchmark_incumbent_value - inc_performance for inc_performance in random_trajectory]
+
+# duplicating the last entry at the end of the budget so both curves can be
+# of the same length
+regret_incumbent_trajectory_dyhpo.append(regret_incumbent_trajectory_dyhpo[-1])
+regret_incumbent_trajectory_random.append(regret_incumbent_trajectory_random[-1])
+
+# adding the last budget to the curve
+dyhpo_budgets.append(1000)
+random_budgets.append(1000)
+
+plt.plot(dyhpo_budgets, regret_incumbent_trajectory_dyhpo, label='DyHPO')
+plt.plot(random_budgets, regret_incumbent_trajectory_random, label='Random')
+plt.yscale('log')
+plt.legend()
+plt.tight_layout()
+
+plt.savefig('example.pdf')
+
+File Path: surrogate_models/dyhpo.py
+Content:
+from copy import deepcopy
+import logging
+import os
+from typing import Dict, Tuple
+
+import numpy as np
+import torch
+import torch.nn as nn
+from torch import cat
+
+import gpytorch
+
+
+class FeatureExtractor(nn.Module):
+    """
+    The feature extractor that is part of the deep kernel.
+    """
+    def __init__(self, configuration):
+        super(FeatureExtractor, self).__init__()
+
+        self.configuration = configuration
+
+        self.nr_layers = configuration['nr_layers']
+        self.act_func = nn.LeakyReLU()
+        # adding one to the dimensionality of the initial input features
+        # for the concatenation with the budget.
+        initial_features = configuration['nr_initial_features'] + 1
+        self.fc1 = nn.Linear(initial_features, configuration['layer1_units'])
+        self.bn1 = nn.BatchNorm1d(configuration['layer1_units'])
+        for i in range(2, self.nr_layers):
+            setattr(
+                self,
+                f'fc{i + 1}',
+                nn.Linear(configuration[f'layer{i - 1}_units'], configuration[f'layer{i}_units']),
+            )
+            setattr(
+                self,
+                f'bn{i + 1}',
+                nn.BatchNorm1d(configuration[f'layer{i}_units']),
+            )
+
+
+        setattr(
+            self,
+            f'fc{self.nr_layers}',
+            nn.Linear(
+                configuration[f'layer{self.nr_layers - 1}_units'] +
+                configuration['cnn_nr_channels'],  # accounting for the learning curve features
+                configuration[f'layer{self.nr_layers}_units']
+            ),
+        )
+        self.cnn = nn.Sequential(
+            nn.Conv1d(in_channels=1, kernel_size=(configuration['cnn_kernel_size'],), out_channels=4),
+            nn.AdaptiveMaxPool1d(1),
+        )
+
+    def forward(self, x, budgets, learning_curves):
+
+        # add an extra dimensionality for the budget
+        # making it nr_rows x 1.
+        budgets = torch.unsqueeze(budgets, dim=1)
+        # concatenate budgets with examples
+        x = cat((x, budgets), dim=1)
+        x = self.fc1(x)
+        x = self.act_func(self.bn1(x))
+
+        for i in range(2, self.nr_layers):
+            x = self.act_func(
+                getattr(self, f'bn{i}')(
+                    getattr(self, f'fc{i}')(
+                        x
+                    )
+                )
+            )
+
+        # add an extra dimensionality for the learning curve
+        # making it nr_rows x 1 x lc_values.
+        learning_curves = torch.unsqueeze(learning_curves, 1)
+        lc_features = self.cnn(learning_curves)
+        # revert the output from the cnn into nr_rows x nr_kernels.
+        lc_features = torch.squeeze(lc_features, 2)
+
+        # put learning curve features into the last layer along with the higher level features.
+        x = cat((x, lc_features), dim=1)
+        x = self.act_func(getattr(self, f'fc{self.nr_layers}')(x))
+
+        return x
+
+
+class GPRegressionModel(gpytorch.models.ExactGP):
+    """
+    A simple GP model.
+    """
+    def __init__(
+        self,
+        train_x: torch.Tensor,
+        train_y: torch.Tensor,
+        likelihood: gpytorch.likelihoods.GaussianLikelihood,
+    ):
+        """
+        Constructor of the GPRegressionModel.
+
+        Args:
+            train_x: The initial train examples for the GP.
+            train_y: The initial train labels for the GP.
+            likelihood: The likelihood to be used.
+        """
+        super(GPRegressionModel, self).__init__(train_x, train_y, likelihood)
+
+        self.mean_module = gpytorch.means.ConstantMean()
+        self.covar_module = gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel())
+
+    def forward(self, x):
+
+        mean_x = self.mean_module(x)
+        covar_x = self.covar_module(x)
+
+        return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
+
+
+class DyHPO:
+    """
+    The DyHPO DeepGP model.
+    """
+    def __init__(
+        self,
+        configuration: Dict,
+        device: torch.device,
+        dataset_name: str = 'unknown',
+        output_path: str = '.',
+        seed: int = 11,
+    ):
+        """
+        The constructor for the DyHPO model.
+
+        Args:
+            configuration: The configuration to be used
+                for the different parts of the surrogate.
+            device: The device where the experiments will be run on.
+            dataset_name: The name of the dataset for the current run.
+            output_path: The path where the intermediate/final results
+                will be stored.
+            seed: The seed that will be used to store the checkpoint
+                properly.
+        """
+        super(DyHPO, self).__init__()
+        self.feature_extractor = FeatureExtractor(configuration)
+        self.batch_size = configuration['batch_size']
+        self.nr_epochs = configuration['nr_epochs']
+        self.early_stopping_patience = configuration['nr_patience_epochs']
+        self.refine_epochs = 50
+        self.dev = device
+        self.seed = seed
+        self.model, self.likelihood, self.mll = \
+            self.get_model_likelihood_mll(
+                configuration[f'layer{self.feature_extractor.nr_layers}_units']
+            )
+
+        self.model.to(self.dev)
+        self.likelihood.to(self.dev)
+        self.feature_extractor.to(self.dev)
+
+        self.optimizer = torch.optim.Adam([
+            {'params': self.model.parameters(), 'lr': configuration['learning_rate']},
+            {'params': self.feature_extractor.parameters(), 'lr': configuration['learning_rate']}],
+        )
+
+        self.configuration = configuration
+        # the number of initial points for which we will retrain fully from scratch
+        # This is basically equal to the dimensionality of the search space + 1.
+        self.initial_nr_points = 10
+        # keeping track of the total hpo iterations. It will be used during the optimization
+        # process to switch from fully training the model, to refining.
+        self.iterations = 0
+        # flag for when the optimization of the model should start from scratch.
+        self.restart = True
+
+        self.logger = logging.getLogger(__name__)
+
+        self.checkpoint_path = os.path.join(
+            output_path,
+            'checkpoints',
+            f'{dataset_name}',
+            f'{self.seed}',
+        )
+
+        os.makedirs(self.checkpoint_path, exist_ok=True)
+
+        self.checkpoint_file = os.path.join(
+            self.checkpoint_path,
+            'checkpoint.pth'
+        )
+
+    def restart_optimization(self):
+        """
+        Restart the surrogate model from scratch.
+        """
+        self.feature_extractor = FeatureExtractor(self.configuration).to(self.dev)
+        self.model, self.likelihood, self.mll = \
+            self.get_model_likelihood_mll(
+                self.configuration[f'layer{self.feature_extractor.nr_layers}_units'],
+            )
+
+        self.optimizer = torch.optim.Adam([
+            {'params': self.model.parameters(), 'lr': self.configuration['learning_rate']},
+            {'params': self.feature_extractor.parameters(), 'lr': self.configuration['learning_rate']}],
+        )
+
+    def get_model_likelihood_mll(
+        self,
+        train_size: int,
+    ) -> Tuple[GPRegressionModel, gpytorch.likelihoods.GaussianLikelihood, gpytorch.mlls.ExactMarginalLogLikelihood]:
+        """
+        Called when the surrogate is first initialized or restarted.
+
+        Args:
+            train_size: The size of the current training set.
+
+        Returns:
+            model, likelihood, mll - The GP model, the likelihood and
+                the marginal likelihood.
+        """
+        train_x = torch.ones(train_size, train_size).to(self.dev)
+        train_y = torch.ones(train_size).to(self.dev)
+
+        likelihood = gpytorch.likelihoods.GaussianLikelihood().to(self.dev)
+        model = GPRegressionModel(train_x=train_x, train_y=train_y, likelihood=likelihood).to(self.dev)
+        mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model).to(self.dev)
+
+        return model, likelihood, mll
+
+    def train_pipeline(self, data: Dict[str, torch.Tensor], load_checkpoint: bool = False):
+        """
+        Train the surrogate model.
+
+        Args:
+            data: A dictionary which has the training examples, training features,
+                training budgets and in the end the training curves.
+            load_checkpoint: A flag whether to load the state from a previous checkpoint,
+                or whether to start from scratch.
+        """
+        self.iterations += 1
+        self.logger.debug(f'Starting iteration: {self.iterations}')
+        # whether the state has been changed. Basically, if a better loss was found during
+        # this optimization iteration then the state (weights) were changed.
+        weights_changed = False
+
+        if load_checkpoint:
+            try:
+                self.load_checkpoint()
+            except FileNotFoundError:
+                self.logger.error(f'No checkpoint file found at: {self.checkpoint_file}'
+                                  f'Training the GP from the beginning')
+
+        self.model.train()
+        self.likelihood.train()
+        self.feature_extractor.train()
+
+        self.optimizer = torch.optim.Adam([
+            {'params': self.model.parameters(), 'lr': self.configuration['learning_rate']},
+            {'params': self.feature_extractor.parameters(), 'lr': self.configuration['learning_rate']}],
+        )
+
+        X_train = data['X_train']
+        train_budgets = data['train_budgets']
+        train_curves = data['train_curves']
+        y_train = data['y_train']
+
+        initial_state = self.get_state()
+        training_errored = False
+
+        if self.restart:
+            self.restart_optimization()
+            nr_epochs = self.nr_epochs
+            # 2 cases where the statement below is hit.
+            # - We are switching from the full training phase in the beginning to refining.
+            # - We are restarting because our refining diverged
+            if self.initial_nr_points <= self.iterations:
+                self.restart = False
+        else:
+            nr_epochs = self.refine_epochs
+
+        # where the mean squared error will be stored
+        # when predicting on the train set
+        mse = 0.0
+
+        for epoch_nr in range(0, nr_epochs):
+
+            nr_examples_batch = X_train.size(dim=0)
+            # if only one example in the batch, skip the batch.
+            # Otherwise, the code will fail because of batchnorm
+            if nr_examples_batch == 1:
+                continue
+
+            # Zero backprop gradients
+            self.optimizer.zero_grad()
+
+            projected_x = self.feature_extractor(X_train, train_budgets, train_curves)
+            self.model.set_train_data(projected_x, y_train, strict=False)
+            output = self.model(projected_x)
+
+            try:
+                # Calc loss and backprop derivatives
+                loss = -self.mll(output, self.model.train_targets)
+                loss_value = loss.detach().to('cpu').item()
+                mse = gpytorch.metrics.mean_squared_error(output, self.model.train_targets)
+                self.logger.debug(
+                    f'Epoch {epoch_nr} - MSE {mse:.5f}, '
+                    f'Loss: {loss_value:.3f}, '
+                    f'lengthscale: {self.model.covar_module.base_kernel.lengthscale.item():.3f}, '
+                    f'noise: {self.model.likelihood.noise.item():.3f}, '
+                )
+                loss.backward()
+                self.optimizer.step()
+            except Exception as training_error:
+                self.logger.error(f'The following error happened while training: {training_error}')
+                # An error has happened, trigger the restart of the optimization and restart
+                # the model with default hyperparameters.
+                self.restart = True
+                training_errored = True
+                break
+
+        """
+        # metric too high, time to restart, or we risk divergence
+        if mse > 0.15:
+            if not self.restart:
+                self.restart = True
+        """
+        if training_errored:
+            self.save_checkpoint(initial_state)
+            self.load_checkpoint()
+
+    def predict_pipeline(
+        self,
+        train_data: Dict[str, torch.Tensor],
+        test_data: Dict[str, torch.Tensor],
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+
+        Args:
+            train_data: A dictionary that has the training
+                examples, features, budgets and learning curves.
+            test_data: Same as for the training data, but it is
+                for the testing part and it does not feature labels.
+
+        Returns:
+            means, stds: The means of the predictions for the
+                testing points and the standard deviations.
+        """
+        self.model.eval()
+        self.feature_extractor.eval()
+        self.likelihood.eval()
+
+        with torch.no_grad(): # gpytorch.settings.fast_pred_var():
+            projected_train_x = self.feature_extractor(
+                train_data['X_train'],
+                train_data['train_budgets'],
+                train_data['train_curves'],
+            )
+            self.model.set_train_data(inputs=projected_train_x, targets=train_data['y_train'], strict=False)
+            projected_test_x = self.feature_extractor(
+                test_data['X_test'],
+                test_data['test_budgets'],
+                test_data['test_curves'],
+            )
+            preds = self.likelihood(self.model(projected_test_x))
+
+        means = preds.mean.detach().to('cpu').numpy().reshape(-1, )
+        stds = preds.stddev.detach().to('cpu').numpy().reshape(-1, )
+
+        return means, stds
+
+    def load_checkpoint(self):
+        """
+        Load the state from a previous checkpoint.
+        """
+        checkpoint = torch.load(self.checkpoint_file)
+        self.model.load_state_dict(checkpoint['gp_state_dict'])
+        self.feature_extractor.load_state_dict(checkpoint['feature_extractor_state_dict'])
+        self.likelihood.load_state_dict(checkpoint['likelihood_state_dict'])
+
+    def save_checkpoint(self, state: Dict =None):
+        """
+        Save the given state or the current state in a
+        checkpoint file.
+
+        Args:
+            state: The state to save, if none, it will
+            save the current state.
+        """
+
+        if state is None:
+            torch.save(
+                self.get_state(),
+                self.checkpoint_file,
+            )
+        else:
+            torch.save(
+                state,
+                self.checkpoint_file,
+            )
+
+    def get_state(self) -> Dict[str, Dict]:
+        """
+        Get the current state of the surrogate.
+
+        Returns:
+            current_state: A dictionary that represents
+                the current state of the surrogate model.
+        """
+        current_state = {
+            'gp_state_dict': deepcopy(self.model.state_dict()),
+            'feature_extractor_state_dict': deepcopy(self.feature_extractor.state_dict()),
+            'likelihood_state_dict': deepcopy(self.likelihood.state_dict()),
+        }
+
+        return current_state
+
+Output:
+{
+    "experimental_code": "class DyHPOAlgorithm:\n\n    def __init__(\n        self,\n        hp_candidates: np.ndarray,\n        log_indicator: List,\n        seed: int = 11,\n        max_benchmark_epochs: int = 52,\n        fantasize_step: int = 1,\n        minimization: bool = True,\n        total_budget: int = 500,\n        device: str = None,\n        dataset_name: str = 'unknown',\n        output_path: str = '.',\n        surrogate_config: dict = None,\n        verbose: bool = True,\n    ):\n        torch.backends.cudnn.deterministic = True\n        torch.backends.cudnn.benchmark = False\n        torch.manual_seed(seed)\n        np.random.seed(seed)\n\n        if device is None:\n            self.dev = torch.device(\n                'cuda') if torch.cuda.is_available() else torch.device('cpu')\n        else:\n            self.dev = torch.device(device)\n\n        self.hp_candidates = hp_candidates\n        self.log_indicator = log_indicator\n\n        self.scaler = MinMaxScaler()\n        self.hp_candidates = self.preprocess_hp_candidates()\n\n        self.minimization = minimization\n        self.seed = seed\n\n        if verbose:\n            logging_level = logging.DEBUG\n        else:\n            logging_level = logging.INFO\n        self.logger = logging.getLogger()\n\n        logging.basicConfig(\n            format='%(levelname)s:%(asctime)s:%(message)s',\n            filename=f'dyhpo_surrogate_{dataset_name}_{seed}.log',\n            level=logging_level,\n        )\n\n        self.examples = dict()\n        self.performances = dict()\n\n        torch.manual_seed(seed)\n        np.random.seed(seed)\n\n        self.max_benchmark_epochs = max_benchmark_epochs\n        self.total_budget = total_budget\n        self.fantasize_step = fantasize_step\n        self.nr_features = self.hp_candidates.shape[1]\n\n        initial_configurations_nr = 1\n        conf_individual_budget = 1\n        self.init_conf_indices = np.random.choice(self.hp_candidates.shape[0], initial_configurations_nr, replace=False)\n        self.init_budgets = [conf_individual_budget] * initial_configurations_nr\n        self.fraction_random_configs = 0.1\n\n        self.model = None\n        self.initial_random_index = 0\n\n        if surrogate_config is None:\n            self.surrogate_config = {\n                'nr_layers': 2,\n                'nr_initial_features': self.nr_features,\n                'layer1_units': 64,\n                'layer2_units': 128,\n                'cnn_nr_channels': 4,\n                'cnn_kernel_size': 3,\n                'batch_size': 64,\n                'nr_epochs': 1000,\n                'nr_patience_epochs': 10,\n                'learning_rate': 0.001,\n            }\n        else:\n            self.surrogate_config = surrogate_config\n\n        self.best_value_observed = np.NINF\n        self.diverged_configs = set()\n\n        self.info_dict = dict()\n\n        self.suggest_time_duration = 0\n        self.budget_spent = 0\n\n        self.output_path = output_path\n        self.dataset_name = dataset_name\n\n        self.no_improvement_threshold = int(self.max_benchmark_epochs + 0.2 * self.max_benchmark_epochs)\n        self.no_improvement_patience = 0\n\n\n    def _prepare_dataset_and_budgets(self) -> Dict[str, torch.Tensor]:\n        train_examples, train_labels, train_budgets, train_curves = self.history_configurations()\n\n        train_examples = np.array(train_examples, dtype=np.single)\n        train_labels = np.array(train_labels, dtype=np.single)\n        train_budgets = np.array(train_budgets, dtype=np.single)\n        train_curves = self.patch_curves_to_same_length(train_curves)\n        train_curves = np.array(train_curves, dtype=np.single)\n\n        train_budgets = train_budgets / self.max_benchmark_epochs\n\n        train_examples = torch.tensor(train_examples)\n        train_labels = torch.tensor(train_labels)\n        train_budgets = torch.tensor(train_budgets)\n        train_curves = torch.tensor(train_curves)\n\n        train_examples = train_examples.to(device=self.dev)\n        train_labels = train_labels.to(device=self.dev)\n        train_budgets = train_budgets.to(device=self.dev)\n        train_curves = train_curves.to(device=self.dev)\n\n        data = {\n            'X_train': train_examples,\n            'train_budgets': train_budgets,\n            'train_curves': train_curves,\n            'y_train': train_labels,\n        }\n\n        return data\n\n    def _train_surrogate(self):\n        data = self._prepare_dataset_and_budgets()\n        self.logger.info(f'Started training the model')\n\n        self.model.train_pipeline(\n            data,\n            load_checkpoint=False,\n        )\n\n    def _predict(self) -> Tuple[np.ndarray, np.ndarray, List, List]:\n        configurations, hp_indices, budgets, learning_curves = self.generate_candidate_configurations()\n        budgets = np.array(budgets, dtype=np.single)\n        non_scaled_budgets = copy.deepcopy(budgets)\n        budgets = budgets / self.max_benchmark_epochs\n\n        configurations = np.array(configurations, dtype=np.single)\n        configurations = torch.tensor(configurations)\n        configurations = configurations.to(device=self.dev)\n\n        budgets = torch.tensor(budgets)\n        budgets = budgets.to(device=self.dev)\n\n        learning_curves = self.patch_curves_to_same_length(learning_curves)\n        learning_curves = np.array(learning_curves, dtype=np.single)\n        learning_curves = torch.tensor(learning_curves)\n        learning_curves = learning_curves.to(device=self.dev)\n\n        train_data = self._prepare_dataset_and_budgets()\n        test_data = {\n            'X_test': configurations,\n            'test_budgets': budgets,\n            'test_curves': learning_curves,\n        }\n\n        mean_predictions, std_predictions = self.model.predict_pipeline(train_data, test_data)\n\n        return mean_predictions, std_predictions, hp_indices, non_scaled_budgets\n\n    def suggest(self) -> Tuple[int, int]:\n        suggest_time_start = time.time()\n        if self.initial_random_index < len(self.init_conf_indices):\n            self.logger.info(\n                'Not enough configurations to build a model. '\n                'Returning randomly sampled configuration'\n            )\n\n            random_indice = self.init_conf_indices[self.initial_random_index]\n            budget = self.init_budgets[self.initial_random_index]\n            self.initial_random_index += 1\n\n            return random_indice, budget\n        else:\n            mean_predictions, std_predictions, hp_indices, non_scaled_budgets = self._predict()\n            best_prediction_index = self.find_suggested_config(\n                mean_predictions,\n                std_predictions,\n                non_scaled_budgets,\n            )\n            best_config_index = hp_indices[best_prediction_index]\n\n            if best_config_index in self.examples:\n                evaluated_budgets = self.examples[best_config_index]\n                max_budget = max(evaluated_budgets)\n                budget = max_budget + self.fantasize_step\n                if budget > self.max_benchmark_epochs:\n                    budget = self.max_benchmark_epochs\n            else:\n                budget = self.fantasize_step\n\n        suggest_time_end = time.time()\n        self.suggest_time_duration = suggest_time_end - suggest_time_start\n\n        self.budget_spent += self.fantasize_step\n\n        if self.budget_spent > self.total_budget:\n            exit(0)\n\n        return best_config_index, budget\n\n    def observe(\n        self,\n        hp_index: int,\n        b: int,\n        learning_curve: np.ndarray,\n        alg_time: Optional[float] = None,\n    ):\n        score = learning_curve[-1]\n        if np.isnan(learning_curve).any():\n            self.update_info_dict(hp_index, b, np.nan, 0)\n            self.diverged_configs.add(hp_index)\n            return\n\n        observe_time_start = time.time()\n\n        self.examples[hp_index] = np.arange(1, b + 1).tolist()\n        self.performances[hp_index] = learning_curve\n\n        if self.best_value_observed < score:\n            self.best_value_observed = score\n            self.no_improvement_patience = 0\n        else:\n            self.no_improvement_patience += 1\n\n        observe_time_end = time.time()\n        train_time_duration = 0\n\n        if self.initial_random_index >= len(self.init_conf_indices):\n            train_time_start = time.time()\n            if self.model is None:\n                self.model = DyHPO(\n                    self.surrogate_config,\n                    self.dev,\n                    self.dataset_name,\n                    self.output_path,\n                    self.seed,\n                )\n\n            if self.no_improvement_patience == self.no_improvement_threshold:\n                self.model.restart = True\n\n            self._train_surrogate()\n\n            train_time_end = time.time()\n            train_time_duration = train_time_end - train_time_start\n\n        observe_time_duration = observe_time_end - observe_time_start\n        total_duration = observe_time_duration + self.suggest_time_duration + train_time_duration\n        if alg_time is not None:\n            total_duration = total_duration + alg_time\n\n        self.update_info_dict(hp_index, b, score, total_duration)\n\n    def prepare_examples(self, hp_indices: List) -> List[np.ndarray]:\n        examples = []\n        for hp_index in hp_indices:\n            examples.append(self.hp_candidates[hp_index])\n\n        return examples\n\n    def generate_candidate_configurations(\n        self,\n    ) -> Tuple[List, List, List, List]:\n        hp_indices = []\n        hp_budgets = []\n        learning_curves = []\n\n        for hp_index in range(0, self.hp_candidates.shape[0]):\n\n            if hp_index in self.examples:\n                budgets = self.examples[hp_index]\n                max_budget = max(budgets)\n                next_budget = max_budget + self.fantasize_step\n                curve = self.performances[hp_index][:max_budget]\n                difference_curve_length = self.surrogate_config['cnn_kernel_size'] - len(curve)\n                if difference_curve_length > 0:\n                    curve.extend([0.0] * difference_curve_length)\n            else:\n                next_budget = self.fantasize_step\n                curve = [0, 0, 0]\n\n            if next_budget <= self.max_benchmark_epochs:\n                hp_indices.append(hp_index)\n                hp_budgets.append(next_budget)\n                learning_curves.append(curve)\n\n        configurations = self.prepare_examples(hp_indices)\n\n        return configurations, hp_indices, hp_budgets, learning_curves\n\n    def history_configurations(\n        self,\n    ) -> Tuple[List, List, List, List]:\n        train_examples = []\n        train_labels = []\n        train_budgets = []\n        train_curves = []\n\n        for hp_index in self.examples:\n            budgets = self.examples[hp_index]\n            performances = self.performances[hp_index]\n            example = self.hp_candidates[hp_index]\n\n            for budget, performance in zip(budgets, performances):\n                train_examples.append(example)\n                train_budgets.append(budget)\n                train_labels.append(performance)\n                train_curve = performances[:budget - 1] if budget > 1 else [0.0]\n                difference_curve_length = self.surrogate_config['cnn_kernel_size'] - len(train_curve)\n                if difference_curve_length > 0:\n                    train_curve.extend([0.0] * difference_curve_length)\n\n                train_curves.append(train_curve)\n\n        return train_examples, train_labels, train_budgets, train_curves\n\n    def acq(\n        self,\n        best_value: float,\n        mean: float,\n        std: float,\n        explore_factor: Optional[float] = 0.25,\n        acq_fc: str = 'ei',\n    ) -> float:\n        if acq_fc == 'ei':\n            if std == 0:\n                return 0\n            z = (mean - best_value) / std\n            acq_value = (mean - best_value) * norm.cdf(z) + std * norm.pdf(z)\n        elif acq_fc == 'ucb':\n            acq_value = mean + explore_factor * std\n        elif acq_fc == 'thompson':\n            acq_value = np.random.normal(mean, std)\n        elif acq_fc == 'exploit':\n            acq_value = mean\n        else:\n            raise NotImplementedError(\n                f'Acquisition function {acq_fc} has not been'\n                f'implemented',\n            )\n\n        return acq_value\n\n    def find_suggested_config(\n        self,\n        mean_predictions: np.ndarray,\n        mean_stds: np.ndarray,\n        budgets: List,\n    ) -> int:\n        highest_acq_value = np.NINF\n        best_index = -1\n\n        index = 0\n        for mean_value, std in zip(mean_predictions, mean_stds):\n            budget = int(budgets[index])\n            best_value = self.calculate_fidelity_ymax(budget)\n            acq_value = self.acq(best_value, mean_value, std, acq_fc='ei')\n            if acq_value > highest_acq_value:\n                highest_acq_value = acq_value\n                best_index = index\n\n            index += 1\n\n        return best_index\n\n    def calculate_fidelity_ymax(self, fidelity: int):\n        exact_fidelity_config_values = []\n        lower_fidelity_config_values = []\n\n        for example_index in self.examples.keys():\n            try:\n                performance = self.performances[example_index][fidelity - 1]\n                exact_fidelity_config_values.append(performance)\n            except IndexError:\n                learning_curve = self.performances[example_index]\n                lower_fidelity_config_values.append(max(learning_curve))\n\n        if len(exact_fidelity_config_values) > 0:\n            best_value = max(exact_fidelity_config_values)\n        else:\n            best_value = max(lower_fidelity_config_values)\n\n        return best_value\n\n    def preprocess_hp_candidates(self) -> List:\n        log_hp_candidates = []\n\n        for hp_candidate in self.hp_candidates:\n            new_hp_candidate = []\n            for index, hp_value in enumerate(hp_candidate):\n                new_hp_candidate.append(math.log(hp_value) if self.log_indicator[index] else hp_value)\n\n            log_hp_candidates.append(new_hp_candidate)\n\n        log_hp_candidates = np.array(log_hp_candidates)\n\n        log_hp_candidates = self.scaler.fit_transform(log_hp_candidates)\n\n        return log_hp_candidates\n\n    @staticmethod\n    def patch_curves_to_same_length(curves):\n        max_curve_length = 0\n        for curve in curves:\n            if len(curve) > max_curve_length:\n                max_curve_length = len(curve)\n\n        for curve in curves:\n            difference = max_curve_length - len(curve)\n            if difference > 0:\n                curve.extend([0.0] * difference)\n\n        return curves\n\nclass FeatureExtractor(nn.Module):\n    def __init__(self, configuration):\n        super(FeatureExtractor, self).__init__()\n\n        self.configuration = configuration\n\n        self.nr_layers = configuration['nr_layers']\n        self.act_func = nn.LeakyReLU()\n        initial_features = configuration['nr_initial_features'] + 1\n        self.fc1 = nn.Linear(initial_features, configuration['layer1_units'])\n        self.bn1 = nn.BatchNorm1d(configuration['layer1_units'])\n        for i in range(2, self.nr_layers):\n            setattr(\n                self,\n                f'fc{i + 1}',\n                nn.Linear(configuration[f'layer{i - 1}_units'], configuration[f'layer{i}_units']),\n            )\n            setattr(\n                self,\n                f'bn{i + 1}',\n                nn.BatchNorm1d(configuration[f'layer{i}_units']),\n            )\n\n\n        setattr(\n            self,\n            f'fc{self.nr_layers}',\n            nn.Linear(\n                configuration[f'layer{self.nr_layers - 1}_units'] +\n                configuration['cnn_nr_channels'],\n                configuration[f'layer{self.nr_layers}_units']\n            ),\n        )\n        self.cnn = nn.Sequential(\n            nn.Conv1d(in_channels=1, kernel_size=(configuration['cnn_kernel_size'],), out_channels=4),\n            nn.AdaptiveMaxPool1d(1),\n        )\n\n    def forward(self, x, budgets, learning_curves):\n\n        budgets = torch.unsqueeze(budgets, dim=1)\n        x = cat((x, budgets), dim=1)\n        x = self.fc1(x)\n        x = self.act_func(self.bn1(x))\n\n        for i in range(2, self.nr_layers):\n            x = self.act_func(\n                getattr(self, f'bn{i}')(\n                    getattr(self, f'fc{i}')(\n                        x\n                    )\n                )\n            )\n\n        learning_curves = torch.unsqueeze(learning_curves, 1)\n        lc_features = self.cnn(learning_curves)\n        lc_features = torch.squeeze(lc_features, 2)\n\n        x = cat((x, lc_features), dim=1)\n        x = self.act_func(getattr(self, f'fc{self.nr_layers}')(x))\n\n        return x\n\n\nclass GPRegressionModel(gpytorch.models.ExactGP):\n    def __init__(\n        self,\n        train_x: torch.Tensor,\n        train_y: torch.Tensor,\n        likelihood: gpytorch.likelihoods.GaussianLikelihood,\n    ):\n        super(GPRegressionModel, self).__init__(train_x, train_y, likelihood)\n\n        self.mean_module = gpytorch.means.ConstantMean()\n        self.covar_module = gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel())\n\n    def forward(self, x):\n\n        mean_x = self.mean_module(x)\n        covar_x = self.covar_module(x)\n\n        return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)\n\n\nclass DyHPO:\n    def __init__(\n        self,\n        configuration: Dict,\n        device: torch.device,\n        dataset_name: str = 'unknown',\n        output_path: str = '.',\n        seed: int = 11,\n    ):\n        super(DyHPO, self).__init__()\n        self.feature_extractor = FeatureExtractor(configuration)\n        self.batch_size = configuration['batch_size']\n        self.nr_epochs = configuration['nr_epochs']\n        self.early_stopping_patience = configuration['nr_patience_epochs']\n        self.refine_epochs = 50\n        self.dev = device\n        self.seed = seed\n        self.model, self.likelihood, self.mll =\n            self.get_model_likelihood_mll(\n                configuration[f'layer{self.feature_extractor.nr_layers}_units']\n            )\n\n        self.model.to(self.dev)\n        self.likelihood.to(self.dev)\n        self.feature_extractor.to(self.dev)\n\n        self.optimizer = torch.optim.Adam([\n            {'params': self.model.parameters(), 'lr': configuration['learning_rate']},\n            {'params': self.feature_extractor.parameters(), 'lr': configuration['learning_rate']}],\n        )\n\n        self.configuration = configuration\n        self.initial_nr_points = 10\n        self.iterations = 0\n        self.restart = True\n\n        self.logger = logging.getLogger(__name__)\n\n        self.checkpoint_path = os.path.join(\n            output_path,\n            'checkpoints',\n            f'{dataset_name}',\n            f'{self.seed}',\n        )\n\n        os.makedirs(self.checkpoint_path, exist_ok=True)\n\n        self.checkpoint_file = os.path.join(\n            self.checkpoint_path,\n            'checkpoint.pth'\n        )\n\n    def restart_optimization(self):\n        self.feature_extractor = FeatureExtractor(self.configuration).to(self.dev)\n        self.model, self.likelihood, self.mll =\n            self.get_model_likelihood_mll(\n                self.configuration[f'layer{self.feature_extractor.nr_layers}_units'],\n            )\n\n        self.optimizer = torch.optim.Adam([\n            {'params': self.model.parameters(), 'lr': self.configuration['learning_rate']},\n            {'params': self.feature_extractor.parameters(), 'lr': self.configuration['learning_rate']}],\n        )\n\n    def get_model_likelihood_mll(\n        self,\n        train_size: int,\n    ) -> Tuple[GPRegressionModel, gpytorch.likelihoods.GaussianLikelihood, gpytorch.mlls.ExactMarginalLogLikelihood]:\n        train_x = torch.ones(train_size, train_size).to(self.dev)\n        train_y = torch.ones(train_size).to(self.dev)\n\n        likelihood = gpytorch.likelihoods.GaussianLikelihood().to(self.dev)\n        model = GPRegressionModel(train_x=train_x, train_y=train_y, likelihood=likelihood).to(self.dev)\n        mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model).to(self.dev)\n\n        return model, likelihood, mll\n\n    def train_pipeline(self, data: Dict[str, torch.Tensor], load_checkpoint: bool = False):\n        self.iterations += 1\n        self.logger.debug(f'Starting iteration: {self.iterations}')\n        weights_changed = False\n\n        if load_checkpoint:\n            try:\n                self.load_checkpoint()\n            except FileNotFoundError:\n                self.logger.error(f'No checkpoint file found at: {self.checkpoint_file}'\n                                  f'Training the GP from the beginning')\n\n        self.model.train()\n        self.likelihood.train()\n        self.feature_extractor.train()\n\n        self.optimizer = torch.optim.Adam([\n            {'params': self.model.parameters(), 'lr': self.configuration['learning_rate']},\n            {'params': self.feature_extractor.parameters(), 'lr': self.configuration['learning_rate']}],\n        )\n\n        X_train = data['X_train']\n        train_budgets = data['train_budgets']\n        train_curves = data['train_curves']\n        y_train = data['y_train']\n\n        initial_state = self.get_state()\n        training_errored = False\n\n        if self.restart:\n            self.restart_optimization()\n            nr_epochs = self.nr_epochs\n            if self.initial_nr_points <= self.iterations:\n                self.restart = False\n        else:\n            nr_epochs = self.refine_epochs\n\n        mse = 0.0\n\n        for epoch_nr in range(0, nr_epochs):\n\n            nr_examples_batch = X_train.size(dim=0)\n            if nr_examples_batch == 1:\n                continue\n\n            self.optimizer.zero_grad()\n\n            projected_x = self.feature_extractor(X_train, train_budgets, train_curves)\n            self.model.set_train_data(projected_x, y_train, strict=False)\n            output = self.model(projected_x)\n\n            try:\n                loss = -self.mll(output, self.model.train_targets)\n                loss_value = loss.detach().to('cpu').item()\n                mse = gpytorch.metrics.mean_squared_error(output, self.model.train_targets)\n                self.logger.debug(\n                    f'Epoch {epoch_nr} - MSE {mse:.5f}, '\n                    f'Loss: {loss_value:.3f}, '\n                    f'lengthscale: {self.model.covar_module.base_kernel.lengthscale.item():.3f}, '\n                    f'noise: {self.model.likelihood.noise.item():.3f}, '\n                )\n                loss.backward()\n                self.optimizer.step()\n            except Exception as training_error:\n                self.logger.error(f'The following error happened while training: {training_error}')\n                self.restart = True\n                training_errored = True\n                break\n\n        if training_errored:\n            self.save_checkpoint(initial_state)\n            self.load_checkpoint()\n\n    def predict_pipeline(\n        self,\n        train_data: Dict[str, torch.Tensor],\n        test_data: Dict[str, torch.Tensor],\n    ) -> Tuple[np.ndarray, np.ndarray]:\n        self.model.eval()\n        self.feature_extractor.eval()\n        self.likelihood.eval()\n\n        with torch.no_grad():\n            projected_train_x = self.feature_extractor(\n                train_data['X_train'],\n                train_data['train_budgets'],\n                train_data['train_curves'],\n            )\n            self.model.set_train_data(inputs=projected_train_x, targets=train_data['y_train'], strict=False)\n            projected_test_x = self.feature_extractor(\n                test_data['X_test'],\n                test_data['test_budgets'],\n                test_data['test_curves'],\n            )\n            preds = self.likelihood(self.model(projected_test_x))\n\n        means = preds.mean.detach().to('cpu').numpy().reshape(-1, )\n        stds = preds.stddev.detach().to('cpu').numpy().reshape(-1, )\n\n        return means, stds\n\n    def load_checkpoint(self):\n        checkpoint = torch.load(self.checkpoint_file)\n        self.model.load_state_dict(checkpoint['gp_state_dict'])\n        self.feature_extractor.load_state_dict(checkpoint['feature_extractor_state_dict'])\n        self.likelihood.load_state_dict(checkpoint['likelihood_state_dict'])\n\n    def save_checkpoint(self, state: Dict =None):\n        if state is None:\n            torch.save(\n                self.get_state(),\n                self.checkpoint_file,\n            )\n        else:\n            torch.save(\n                state,\n                self.checkpoint_file,\n            )\n\n    def get_state(self) -> Dict[str, Dict]:\n        current_state = {\n            'gp_state_dict': deepcopy(self.model.state_dict()),\n            'feature_extractor_state_dict': deepcopy(self.feature_extractor.state_dict()),\n            'likelihood_state_dict': deepcopy(self.likelihood.state_dict()),\n        }\n\n        return current_state",
+    "experimental_info": "The DyHPO method is evaluated with the following experimental settings:\n\n**Overall Experiment Setup (from `main_experiment.py` and `hpo_method.py`):**\n*   **Benchmarks:** LCBench and TaskSet. LCBench is a maximization problem (`minimization=False`), while TaskSet is a minimization problem (`minimization=True`).\n*   **Fantasize Step (`fantasize_step`):** 1 (meaning budgets are incremented by one step).\n*   **Total HPO Budget Limit (`total_budget`):** 1000 evaluations.\n*   **Dataset Name:** Defaults to 'covertype' for illustration.\n*   **Seeds:** Experiments are run for 10 seeds (`np.arange(10)`).\n*   **Max Benchmark Epochs (`max_benchmark_epochs`):** 51 for both LCBench and TaskSet.\n*   **Initial Random Configurations:** 1 configuration evaluated at budget 1 (`initial_configurations_nr = 1`, `conf_individual_budget = 1`).\n*   **Fraction of Random Configurations:** 0.1 (though the provided code primarily samples from the model after initial random configs).\n*   **Acquisition Function (`acq_fc`):** Expected Improvement ('ei') is used.\n*   **Exploration Factor (`explore_factor`):** Defaulted to 0.25 in the `acq` function, but primarily relevant for UCB.\n*   **Hyperparameter Preprocessing:** Hyperparameter candidates are preprocessed using `MinMaxScaler` after applying `math.log` for log-sampled hyperparameters. Budgets are scaled to `[0, 1]` by dividing by `max_benchmark_epochs`.\n*   **Learning Curve Handling:** Learning curves are padded with zeros to a consistent length, at least the `cnn_kernel_size`, for input to the convolutional neural network.\n\n**DyHPO Surrogate Model Configuration (from `DyHPOAlgorithm.__init__` and `DyHPO.__init__`):**\n*   **Deep Kernel Neural Network (`FeatureExtractor`) Architecture:**\n    *   `nr_layers`: 2\n    *   `nr_initial_features`: Determined by the number of hyperparameters (`self.nr_features`).\n    *   `layer1_units`: 64\n    *   `layer2_units`: 128\n    *   `cnn_nr_channels`: 4\n    *   `cnn_kernel_size`: 3 (for the 1D convolution on learning curves).\n*   **Gaussian Process Model:** Uses a `gpytorch.kernels.ScaleKernel` with an `RBFKernel` (Squared Exponential Kernel).\n*   **Optimizer:** Adam optimizer.\n    *   `learning_rate`: 0.001.\n    *   `batch_size`: 64.\n*   **Training Strategy:**\n    *   **Full Training Epochs (`nr_epochs`):** 1000 epochs when training from scratch.\n    *   **Refinement Epochs (`refine_epochs`):** 50 epochs after initial full training.\n    *   **Initial Points for Full Retraining (`initial_nr_points`):** 10 (model restarts from scratch for the first 10 iterations).\n    *   **No Improvement Patience (`no_improvement_patience`):** Model restarts (`self.model.restart = True`) if there's no incumbent improvement for `no_improvement_threshold` iterations, where `no_improvement_threshold` is `int(max_benchmark_epochs + 0.2 * max_benchmark_epochs)`."
+}
