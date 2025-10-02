@@ -1,0 +1,81 @@
+# config/smoke_test.yaml
+# Lightweight versions of all 4 experiment variations using the dummy
+# dataset & model so that CI pipelines can finish quickly.
+
+experiments:
+  - run_id: smoke_asha_baseline
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 32
+    epochs: 2
+    seed: 0
+    target_metric: 0.2
+    warm_start_mode: none
+    eta_h: 0.0
+    hg_steps: 0
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+      augment_magnitude: 5.0
+      label_smoothing: 0.0
+
+  - run_id: smoke_asha_random_warm
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 32
+    epochs: 2
+    seed: 0
+    target_metric: 0.2
+    warm_start_mode: random
+    random_sigma: 0.01
+    eta_h: 0.0
+    hg_steps: 0
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+      augment_magnitude: 5.0
+      label_smoothing: 0.0
+
+  - run_id: smoke_asha_ohgw_1step
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 32
+    epochs: 2
+    seed: 0
+    target_metric: 0.2
+    warm_start_mode: ohgw
+    eta_h: 0.001
+    hg_steps: 1
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+      augment_magnitude: 5.0
+      label_smoothing: 0.0
+
+  - run_id: smoke_asha_ohgw_3step
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 32
+    epochs: 2
+    seed: 0
+    target_metric: 0.2
+    warm_start_mode: ohgw
+    eta_h: 0.001
+    hg_steps: 3
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+      augment_magnitude: 5.0
+      label_smoothing: 0.0
