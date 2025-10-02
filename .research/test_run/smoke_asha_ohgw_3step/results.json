@@ -1,0 +1,23 @@
+{
+  "run_id": "smoke_asha_ohgw_3step",
+  "hyperparameters": {
+    "log_lr": -1.0,
+    "log_wd": -4.0,
+    "momentum": 0.8999999761581421
+  },
+  "train_loss_history": [
+    2.4582943841814995,
+    1.0974453669041395
+  ],
+  "val_loss_history": [
+    2.879753530025482,
+    11.819370031356812
+  ],
+  "val_accuracy_history": [
+    0.12890625,
+    0.10546875
+  ],
+  "best_val_accuracy": 0.12890625,
+  "training_time_sec": 1.1335573196411133,
+  "time_to_target_sec": null
+}

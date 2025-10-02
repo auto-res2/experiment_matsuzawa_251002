@@ -1,0 +1,23 @@
+{
+  "run_id": "smoke_asha_random_warm",
+  "hyperparameters": {
+    "log_lr": -1.009246587753296,
+    "log_wd": -3.9981918334960938,
+    "momentum": 0.9047245383262634
+  },
+  "train_loss_history": [
+    2.4657323956489563,
+    1.2707324624061584
+  ],
+  "val_loss_history": [
+    2.949146032333374,
+    13.166261672973633
+  ],
+  "val_accuracy_history": [
+    0.1015625,
+    0.125
+  ],
+  "best_val_accuracy": 0.125,
+  "training_time_sec": 1.159184217453003,
+  "time_to_target_sec": null
+}

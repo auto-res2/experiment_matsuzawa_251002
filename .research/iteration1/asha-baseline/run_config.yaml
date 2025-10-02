@@ -1,0 +1,18 @@
+batch_size: 128
+dataset_name: cifar10
+epochs: 200
+eta_h: 0.0
+hg_steps: 0
+hyperparams:
+  augment_magnitude: 5.0
+  label_smoothing: 0.0
+  log_lr: -1.0
+  log_wd: -4.0
+  momentum: 0.9
+model_name: resnet20
+num_classes: 10
+num_workers: 4
+run_id: asha-baseline
+seed: 0
+target_metric: 0.93
+warm_start_mode: none

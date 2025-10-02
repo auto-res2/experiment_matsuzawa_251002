@@ -1,0 +1,23 @@
+{
+  "run_id": "smoke_asha_baseline",
+  "hyperparameters": {
+    "log_lr": -1.0,
+    "log_wd": -4.0,
+    "momentum": 0.8999999761581421
+  },
+  "train_loss_history": [
+    2.4639351591467857,
+    1.2397286873310804
+  ],
+  "val_loss_history": [
+    2.91774383187294,
+    12.754745721817017
+  ],
+  "val_accuracy_history": [
+    0.09765625,
+    0.12890625
+  ],
+  "best_val_accuracy": 0.12890625,
+  "training_time_sec": 1.4183297157287598,
+  "time_to_target_sec": null
+}

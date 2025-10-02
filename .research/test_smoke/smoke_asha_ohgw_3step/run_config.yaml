@@ -1,0 +1,21 @@
+batch_size: 32
+dataset_name: dummy
+epochs: 2
+eta_h: 0.001
+hg_steps: 3
+hyperparams:
+  augment_magnitude: 5.0
+  label_smoothing: 0.0
+  log_lr: -1.0
+  log_wd: -4.0
+  momentum: 0.9
+input_shape:
+- 1
+- 28
+- 28
+model_name: dummy
+num_classes: 10
+run_id: smoke_asha_ohgw_3step
+seed: 0
+target_metric: 0.2
+warm_start_mode: ohgw
