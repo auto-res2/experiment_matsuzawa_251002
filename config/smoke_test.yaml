@@ -1,0 +1,88 @@
+description: "Smoke test – lightweight versions of PASHA/GPT-2 OHGW variations"
+experiments:
+  - run_id: pasha-baseline-smoke
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 128
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 128
+    training:
+      batch_size: 2
+      epochs: 2
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: false
+    evaluation:
+      threshold_ppl: 100
+
+  - run_id: pasha-ohgw-vision-tuned-eta-smoke
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 128
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 128
+    training:
+      batch_size: 2
+      epochs: 2
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.001
+    evaluation:
+      threshold_ppl: 100
+
+  - run_id: pasha-ohgw-low-eta-smoke
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 128
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 128
+    training:
+      batch_size: 2
+      epochs: 2
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.0003
+    evaluation:
+      threshold_ppl: 100
+
+  - run_id: pasha-ohgw-noisy-data-smoke
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 128
+      noise: 0.15
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 128
+    training:
+      batch_size: 2
+      epochs: 2
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.001
+    evaluation:
+      threshold_ppl: 100

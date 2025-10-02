@@ -1,0 +1,88 @@
+description: "WikiText-103 PASHA vs PASHA+OHGW experiments – language modelling task"
+experiments:
+  - run_id: pasha-baseline
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 1024
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 1024
+    training:
+      batch_size: 2  # ~2048 tokens per step on 1 GPU; distributed handled outside
+      epochs: 50
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: false
+    evaluation:
+      threshold_ppl: 30
+
+  - run_id: pasha-ohgw-vision-tuned-eta
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 1024
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 1024
+    training:
+      batch_size: 2
+      epochs: 50
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.001
+    evaluation:
+      threshold_ppl: 30
+
+  - run_id: pasha-ohgw-low-eta
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 1024
+      noise: 0.0
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 1024
+    training:
+      batch_size: 2
+      epochs: 50
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.0003
+    evaluation:
+      threshold_ppl: 30
+
+  - run_id: pasha-ohgw-noisy-data
+    seed: 0
+    dataset:
+      type: Wikitext103
+      seq_len: 1024
+      noise: 0.15  # 15% token corruption for robustness test
+    model:
+      type: GPT2SmallLM
+      max_seq_len: 1024
+    training:
+      batch_size: 2
+      epochs: 50
+      optimizer:
+        name: AdamW
+        lr: 0.0005
+        weight_decay: 0.01
+    ohgw:
+      enabled: true
+      eta: 0.001
+    evaluation:
+      threshold_ppl: 30
