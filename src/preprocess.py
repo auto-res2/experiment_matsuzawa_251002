@@ -86,7 +86,7 @@ def get_dataloaders(
 
         tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
 
-        raw_ds = load_dataset("yehzw/wikitext-103", cache_dir=str(data_root))
+        raw_ds = load_dataset("yehzw/wikitext-103", "raw", cache_dir=str(data_root))
         train_texts = raw_ds["train"]["text"]
         val_texts = raw_ds["validation"]["text"]
         test_texts = raw_ds["test"]["text"]

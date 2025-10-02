@@ -1,0 +1,6 @@
+=== [PHASE 2/2] Full experiment start Thu Oct  2 01:04:59 PM UTC 2025 ===
+{
+  "timestamp": "2025-10-02T13:05:00.088015",
+  "experiment_description": "WikiText-103 PASHA vs PASHA+OHGW experiments \u2013 language modelling task"
+}
+{"status": "starting", "run_id": "pasha-baseline"}

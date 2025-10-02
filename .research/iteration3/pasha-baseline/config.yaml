@@ -1,0 +1,20 @@
+dataset:
+  noise: 0.0
+  seq_len: 1024
+  type: Wikitext103
+evaluation:
+  threshold_ppl: 30
+model:
+  max_seq_len: 1024
+  type: GPT2SmallLM
+ohgw:
+  enabled: false
+run_id: pasha-baseline
+seed: 0
+training:
+  batch_size: 2
+  epochs: 50
+  optimizer:
+    lr: 0.0005
+    name: AdamW
+    weight_decay: 0.01
