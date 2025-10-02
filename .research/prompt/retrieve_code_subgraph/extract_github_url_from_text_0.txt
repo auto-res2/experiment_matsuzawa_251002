@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+BOIL models the cost-sensitive objective function f(x,t) using a Gaussian Process (GP) with a product kernel over hyperparameters x and training iterations t. The training time cost c(x,t) is approximated by a linear regressor. The algorithm selects the next evaluation point by maximizing a cost-aware acquisition function (a modified Expected Improvement criterion) that balances utility, exploration, and computational cost. Learning curves are compressed into a numeric score using a Sigmoid preference function, whose growth and middle point parameters (g0, m0) are learned by maximizing the GP's log marginal likelihood. To augment data efficiently and avoid GP covariance matrix ill-conditioning, a subset of points from the observed learning curve is actively selected at regions of maximum GP predictive uncertainty, with the number of augmented points adaptively controlled by a condition number threshold.
+
+# GitHub URLs List
+['https://github.com/ntienvu/BOIL']
+Output:
+{
+    "index": 0
+}
