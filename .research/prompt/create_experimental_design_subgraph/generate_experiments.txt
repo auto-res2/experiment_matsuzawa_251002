@@ -1,0 +1,175 @@
+
+Input:
+You are a cutting-edge AI researcher. Based on the new method described in # New Methods and the experimental policy outlined in # Experiment Strategy, please generate 2 distinct Experiment objects.
+
+# Instructions
+- Generate 2 major experimental lines (Experiment objects) based on the experimental strategy.
+- Each Experiment (identified by experiment_id) represents a different experimental perspective or validation angle.
+- Within each Experiment, run_variations are the variations that will be compared against each other (e.g., ["baseline", "proposed"], ["full-method", "ablation-A", "ablation-B"]).
+- Keep run_variations to 3-5 variations per experiment (including baseline and proposed method) to ensure reasonable execution time and resource usage.
+- Each Experiment should:
+    - Have a unique experiment_id (e.g., "exp-1", "exp-2", "exp-3")
+    - Have a clear description of its objective or hypothesis
+    - Have a list of run_variations that will be compared within this experiment
+    - Cover different aspects of validating the proposed method
+- The experiments should be complementary and cover various validation angles such as:
+    - Main performance validation
+    - Ablation studies
+    - Robustness tests
+    - Comparison with baselines
+    - Hyperparameter sensitivity analysis
+    - Computational efficiency analysis
+- Each experiment will have its own GitHub branch and code.
+- The run_variations within each experiment define different configurations or conditions to test (e.g., different hyperparameters, different baselines, different datasets).
+
+- Design the details of each experiment assuming the execution environment specified in "Experimental Environment."
+- The experimental details should include the following for each experiment:
+    - Machine learning / deep learning models to be used
+        - If necessary, also include baseline models.
+    - Datasets
+    - Dataset preprocessing methods
+    - Data splitting method (train/val/test, cross-validation)
+    - Number of repetitions (number of seeds), averaging method, and selection criteria (best-val, last, early stopping)
+    - Evaluation metrics
+        - Primary and secondary metrics
+        - Examples: Accuracy / F1 / AUROC (classification), RMSE / MAE (regression), mAP (detection), mIoU (segmentation), BLEU / ROUGE / METEOR (generation), NDCG / MRR (ranking), ECE / Brier Score (calibration)
+    - Comparisons
+        - Prior methods (strong baselines, SOTA, simple baselines), etc.
+        - If there are implementation or configuration differences, note the adjustments in footnotes.
+    - Methods for analyzing important hyperparameters (e.g., learning rate, temperature, k, thresholds)
+    - Methods for assessing robustness
+        - Resistance to noise injection, distribution shift (OOD), adversarial perturbations, and domain transfer
+    - Computation of FLOPs, training/inference time, memory usage, and cost / wall-clock time
+    - Example experimental code
+- Avoid excessive redundancy across experiments. When a single experiment can cover multiple validation items, integrate them appropriately.
+- NO-FALLBACK CONSTRAINT: Never suggest using synthetic/dummy/placeholder data.
+- Also provide:
+    - expected_models: A list of specific model names/architectures that will be used across all experiments (e.g., ["ResNet-50", "BERT-base", "GPT-3.5-turbo"])
+    - expected_datasets: A list of specific dataset names that will be used across all experiments (e.g., ["CIFAR-10", "ImageNet", "IMDB Reviews"])
+
+## Output Format
+Please provide:
+- experiments: A list of 2 Experiment objects, each with:
+    - experiment_id: Unique identifier
+    - run_variations: List of variation names/identifiers for this experiment
+    - description: Detailed description including all aspects mentioned in the instructions
+- expected_models: List of model names/architectures
+- expected_datasets: List of dataset names
+
+# Experimental Environment
+NVIDIA A100×8
+VRAM：80GB×8
+RAM：2048 GB
+
+# Current Research Method (Target for Experiment Design)
+{
+    "Open Problems": "Even the fastest gray–box and multi-fidelity HPO methods (ASHA, PASHA, DyHPO, BOIL) still waste computation on obviously bad configurations because every trial is treated as a black box; none of the information that is already available inside the training loop – most notably the stochastic hyper-gradient obtained at almost zero cost with automatic differentiation – is used to steer the search. The open problem is: how can we inject very cheap, noisy hyper-gradient signals into existing bandit-style schedulers without redesigning their core logic?",
+    "Methods": "We propose ‘One-Shot Hyper-Gradient Warm-Starts’ (OHGW), a drop-in modification for any Successive-Halving style scheduler (Hyperband / ASHA / PASHA).  1. When a new configuration x is sampled it is run for only one **mini-batch** (≈10-2% of a normal epoch).  2. In this first forward / backward pass we keep the compute graph and call automatic differentiation once more to obtain a single stochastic hyper-gradient ∂L/∂ψ for every continuous hyperparameter ψ (learning-rate, weight-decay, momentum …) exactly as in implicit hyper-gradient papers, but **without unrolling** (cost <1.2× normal mini-batch).  3. We apply one hyper-parameter update ψ←ψ−η_h ∂L/∂ψ (η_h is a fixed tiny step such as 10-3).  4. The adjusted configuration x′ – which differs from x by at most one gradient step in each hyper-parameter – is what the scheduler subsequently evaluates for its first rung (e.g. 1 epoch).  5. Everything else (promotion rules, budget doubling, stopping) is untouched.  In effect the scheduler still explores the same region, but every candidate is lightly nudged towards a valley before costly training starts.",
+    "Experimental Setup": "Benchmark: CIFAR-10 with ResNet-20 and 5-dim continuous search space {log-lr, log-wd, momentum, augment-magnitude, label-smoothing}.  Scheduler baselines: ASHA, PASHA, DyHPO (their public implementations).  Our variants: ASHA+OHGW, PASHA+OHGW, DyHPO+OHGW (one-line wrapper around trial creation).  Mini-batch for warm-start: 128 images.  Hyper-gradient lr η_h=1e-3, computed with PyTorch autograd; no higher-order terms.  Each method is given the same overall GPU budget (4×V100 for 12 hours) and 50 seeds.  Metrics: (i) best test accuracy reached vs. wall-clock, (ii) total GPU hours until 93% accuracy, (iii) distribution of final hyper-parameters to check bias.",
+    "Experimental Code": "# pseudo-code\nfor cfg in scheduler.sample():\n    model = build_model(cfg)\n    data = next(train_loader)            # one mini-batch\n    loss  = forward_loss(model, data)\n    grads = torch.autograd.grad(loss, cfg.continuous_params())\n    with torch.no_grad():               # one hyper step\n        for p,g in zip(cfg.continuous_params(), grads):\n            p -= eta_h * g\n    scheduler.launch(cfg)               # continue as usual",
+    "Expected Result": "Across all schedules OHGW cuts the median time-to-93%-accuracy by ≈20% (ASHA 11.2→9.0 h, PASHA 7.3→5.8 h, DyHPO 6.1→4.9 h) while keeping the same final accuracy. The added warm-start costs <3% extra compute. Hyper-parameter distributions remain similar, showing no harmful bias.",
+    "Expected Conclusion": "A single stochastic hyper-gradient step collected before the first rung is enough to noticeably reduce wasted resources in bandit-style HPO. Because OHGW requires only two extra autograd calls and no change to the scheduler logic, it can be retro-fitted to almost any existing gray-box optimizer, offering an attractive efficiency boost with negligible engineering effort."
+}
+
+# Experiment Strategy
+Overall Experimental Strategy for Validating One-Shot Hyper-Gradient Warm-Starts (OHGW)
+
+1. Core Hypotheses to Validate
+   a. Efficiency: OHGW reduces wall-clock time and GPU hours needed by bandit-style schedulers to reach a preset performance threshold.
+   b. Performance Preservation: OHGW does not hurt (and ideally preserves or slightly improves) the best final metric attainable by the underlying scheduler.
+   c. Robustness & Variance: OHGW’s benefit is consistent across random seeds, search-space dimensionalities, data sets, model families and scheduler types.
+   d. Generalization: The same one-line wrapper applies without retuning to tasks beyond image classification (e.g. language modelling, tabular, RL) and to both small- and large-scale training loops.
+   e. Cost Overhead: Extra compute, memory and engineering overhead introduced by OHGW remain negligible (<5 % GPU-hours, <10 % peak-memory, ≤20 LoC integration).
+
+2. Experiment Families (all experiments draw from one common pool of settings below)
+   • Task Breadth: vision (CIFAR-10/100, ImageNet-1k), NLP (WikiText-103), tabular (UCI suite), RL (Atari).
+   • Model Breadth: ResNet family, ViT, Transformer-LM, XGBoost, PPO-CNN.
+   • Scheduler Breadth: ASHA, PASHA, DyHPO, Hyperband-BO, BOIL (if open-sourced).
+   • Search-Space Breadth: 3–10 continuous hyper-parameters; mixed discrete+continuous cases to show neutrality to inapplicable params.
+   • Scale Breadth: single-GPU up to 64-GPU distributed training (multi-node pools or simulated via concurrency on the 8×A100 machine).
+
+3. Comparison Axes for Every Experiment
+   • Baseline Scheduler (vanilla).
+   • Baseline + Random Warm-Start in ∆ψ range (controls for mere perturbation).
+   • Baseline + Multiple Hyper-Gradient Steps (ablation to check diminishing returns).
+   • Scheduler-specific SoTA gradient-aware HPO if available (e.g. DyHPO, BOIL) to position OHGW competitively.
+
+4. Metrics & Evaluation Protocol
+   Primary quantitative metrics (reported as median ±IQR over ≥30 seeds):
+      – T@τ: Wall-clock/GPU-hour to reach target score τ (task-specific; chosen so that vanilla reaches it within budget).
+      – Best final validation/test score after fixed budget.
+      – Compute Overhead: (Σ warm-start flop) ⁄ (total flop) and peak VRAM.
+   Secondary diagnostics:
+      – AUC of best-score-vs-time curve (overall sample efficiency).
+      – Seed-wise variance of T@τ and final score.
+      – Hyper-parameter trajectory statistics (mean shift & KL-divergence of posterior over ψ).
+   Qualitative/visual:
+      – Survival plots of promoted configurations per rung.
+      – Heatmaps of hyper-gradient magnitude vs. eventual benefit.
+   Statistical test: two-sided Wilcoxon signed-rank (α=0.05) on paired seeds.
+
+5. Success Criteria (must hold in ≥75 % of experiment tuples)
+   • ≥15 % median reduction in T@τ with p<0.05.
+   • ≤0.2 % relative drop (or improvement) in best final score.
+   • ≤5 % extra GPU-hours and ≤10 % extra peak VRAM.
+   • Std-dev(T@τ) not inflated by more than 10 %.
+
+6. Multi-Perspective Validation Plan
+   • Efficiency: Use identical global budgets and identical seed lists; plot temporal efficiency curves and compute aggregated speed-up ratios.
+   • Performance Preservation: Report final accuracy/F1/return and confidence intervals.
+   • Robustness: Repeat each experiment block with different batch sizes, η_h values (10⁻⁴…10⁻²) and noisy labels; perform sensitivity analysis.
+   • Generalization: Run a “zero-tuning transfer” study—apply the CIFAR-tuned η_h to NLP, RL and tabular tasks unchanged.
+   • Ablations & Controls: Random perturbation, multistep hyper-gradient, frozen discrete params, partial gradient masking.
+   • Scalability: Micro-benchmark warm-start time and memory for 1, 8, 64 GPUs using synthetic workloads.
+
+7. Experimental Logistics
+   • Central harness (Hydra + PyTorch Lightning) to register all trials, guarantee identical I/O pipelines and logging format (wandb/MLflow).
+   • Dedicate 4×A100 per independent replicate to avoid resource contention; schedule via Slurm with cgroup accounting to record accurate GPU-hour usage.
+   • Automated post-processing notebook generates unified tables, statistical tests and publication-ready plots.
+
+8. Risk Mitigation & Contingency
+   • If hyper-gradient extraction fails for exotic layers, fall back to finite-difference on ψ only (flag run but keep in aggregated stats).
+   • If OHGW underperforms on discrete-heavy spaces, isolate continuous subset and document limitation.
+
+This unified strategy guarantees that every forthcoming experiment—regardless of domain—collects commensurate evidence on efficiency, performance, robustness, generality and overhead, enabling a cohesive, multi-angle validation of OHGW’s claimed benefits.
+
+---
+
+
+# Reference Information from Previous Iteration
+
+Output:
+{
+    "experiments": [
+        {
+            "experiment_id": "exp-1",
+            "run_variations": [
+                "asha-baseline",
+                "asha-random-warm",
+                "asha-ohgw-1step",
+                "asha-ohgw-3step"
+            ],
+            "description": "Objective / Hypothesis: Quantify the raw efficiency gains of One-Shot Hyper-Gradient Warm-Starts (OHGW) for classical image-classification hyper-parameter optimisation and disentangle the effect of merely perturbing the hyper-parameters from using the true hyper-gradient.\n\nDomain & Task: Vision – CIFAR-10 image classification.\n\nModels: ResNet-20 (main), ResNet-50 (sanity-check on a deeper network – evaluated only for the best scheduler variant after selection).\n\nSchedulers under test: ASHA (official implementation in Ray-Tune v2.6).\n\nSearch space (5-dim continuous): log10-learning-rate, log10-weight-decay, momentum, RandAugment-magnitude, label-smoothing.\n\nRun variations:\n• asha-baseline – vanilla ASHA.\n• asha-random-warm – perform one random Gaussian step (σ=0.01) in ψ instead of a hyper-gradient step (control).* \n• asha-ohgw-1step – proposed method (η_h=1e-3, one step).\n• asha-ohgw-3step – same but apply three successive hyper-gradient steps (ablation for diminishing returns).\n\nDatasets & Pre-processing: CIFAR-10, standard train/val/test split = 45k/5k/10k.  Per-image Z-score normalisation, RandAugment (m searchable), Cutout(16), label-smoothing (ε searchable).  Validation set is stratified.\n\nTraining loop: 200 epochs (budget for full training), Cosine LR, batch size 128, SGD-M.  Weight initialisation He-normal.  Mixed precision (AMP).  Early-stopping OFF (to reveal full curve).\n\nEvaluation metrics:\nPrimary – T@93%: wall-clock hours & GPU hours needed to first reach 93% val accuracy.\nSecondary – best test accuracy after 200 epochs; AUC(score-vs-time); overhead-FLOPs ratio; peak VRAM; seed-wise variance.\n\nProtocol: 32 independent HPO replicates (seed-paired across variations).  Each replicate is allowed 12 A100-GPU hours (4 GPUs×3 h) exactly.  Statistics: median±IQR, Wilcoxon signed-rank (α=0.05) on paired T@93%.\n\nHyper-parameter sensitivity: inside asha-ohgw-1step, sweep η_h ∈ {1e-4, 3e-4, 1e-3, 3e-3} on an extra 8 seeds; fit LOESS to quantify curvature.\n\nRobustness: inject 10% symmetric label noise on a duplicate run; compare % speed-up retained.\n\nCompute efficiency: PyTorch-Profiler to record FLOPs; NVML + psutil for VRAM/RAM; timestamps logged by Lightning Callbacks.\n\nExample code fragment (within Ray trial):\n```python\n# one-shot HG warm-start\nloss = model(train_mb)                    # forward\nhyper_grads = torch.autograd.grad(loss, cfg.continuous())\nwith torch.no_grad():\n    for p, g in zip(cfg.continuous(), hyper_grads):\n        p -= 1e-3 * g                     # η_h\n# hand control back to ASHA\ntrain_full(cfg)\n```\n\nComputational budget on cluster: 8 concurrent trials * 4 GPUs each = 32 GPUs (< half of node).  Wall-clock expected 18h incl. repeats.\n\nSuccess criteria: ≥15% lower median T@93% for asha-ohgw-1step than asha-baseline with p<0.05 and ≤0.2% drop in final test accuracy.\n\nFootnote *: random-warm uses identical σ distribution as the empirical magnitude of a hyper-gradient step, ensuring fair energy injection."
+        },
+        {
+            "experiment_id": "exp-2",
+            "run_variations": [
+                "pasha-baseline",
+                "pasha-ohgw-vision-tuned-eta",
+                "pasha-ohgw-low-eta",
+                "pasha-ohgw-noisy-data"
+            ],
+            "description": "Objective / Hypothesis: Test zero-shot generalisation and robustness of OHGW in a different modality (language modelling) and under distribution shift.\n\nDomain & Task: NLP – word-level language modelling on WikiText-103, with an additional OOD evaluation on WikiText-103-v1 (headlines first 5% shuffled – simulates domain drift).\n\nModel: GPT2-small (124 M params, HuggingFace implementation) trained from scratch with BPE vocab 50 k.\n\nScheduler: PASHA (2023) – gradient-aware variation of Hyperband; ours wraps PASHA in the same way.\n\nSearch space (6 dims): log10-learning-rate, log10-weight-decay, attention-dropout, residual-dropout, label-smoothing, warmup-steps (continuous proxy by scaling factor).\n\nRun variations:\n• pasha-baseline – vanilla PASHA.\n• pasha-ohgw-vision-tuned-eta – OHGW with η_h=1e-3 exactly copied from CIFAR experiment (tests transfer without retuning).\n• pasha-ohgw-low-eta – OHGW with η_h=3e-4 (sensitivity extremum).\n• pasha-ohgw-noisy-data – OHGW with η_h=1e-3 while 15% of training tokens are randomly replaced (robustness to noise).\n\nDataset processing: SentencePiece BPE (shared).  Sequence length 1024 tokens; dynamic batching up to 2M tokens/GPU.  Train/val/test split 238M / 8M / 8M tokens.  For OOD, evaluate perplexity on shuffled-headline subset (unseen ordering).\n\nTraining loop & budget: 50 training epochs (~250 k updates), AdamW, cosine LR.  PASHA minimum resource per config = 2 epochs, rungs ×2.  Total compute budget per replicate 16 GPU×hours (8 GPUs ×2 h).  24 replicates.\n\nEvaluation metrics:\nPrimary – T@ppl=30 on validation set (wall-clock & GPU-h).\nSecondary – best validation perplexity, best OOD perplexity, FLOPs overhead, peak VRAM, std-dev across seeds.\nCalibration metric – ECE (expected calibration error) on top-k probabilities (k=10).\n\nData splitting: Configs use 90/10 split of train for inner-val to avoid test leakage; final report on held-out test.\n\nHyper-parameter analysis: log sweep of η_h done offline on 5 seeds; fit cubic spline to measure optimal region width (reports in appendix).\n\nRobustness procedures:\n1. Data noise: see pasha-ohgw-noisy-data.\n2. Distribution shift: compute perplexity on OOD set after every rung, record Δppl.\n3. Adversarial tokens: evaluate final models with TextFooler adversarial examples on 5 k sentences, report degradation.\n\nCompute profiling: same toolkit as exp-1; additionally use PyTorch-CUDA-Profiler for kernel-level warm-start cost.\n\nExample trial wrapper:\n```python\nloss = lm_model(input_ids, labels=input_ids).loss\nhg = torch.autograd.grad(loss, cfg.continuous())\nwith torch.no_grad():\n    for p,g in zip(cfg.continuous(), hg):\n        p -= eta_h * g    # no extra unroll\npasha_scheduler.launch(cfg)\n```\n\nStatistical testing: Paired Wilcoxon on T@30 with Bonferroni correction (m=3 comparisons).  Significance if p<0.016.\n\nSuccess criteria: vision-tuned η_h version achieves ≥15% speed-up vs. baseline on T@30 with ≤0.5 ppl regression on final test; effect still ≥10% under noisy data.  Extra compute overhead ≤5% of total FLOPs."
+        }
+    ],
+    "expected_models": [
+        "ResNet-20",
+        "ResNet-50",
+        "GPT2-small"
+    ],
+    "expected_datasets": [
+        "CIFAR-10",
+        "CIFAR-100",
+        "WikiText-103"
+    ]
+}
