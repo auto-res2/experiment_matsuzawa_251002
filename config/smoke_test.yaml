@@ -1,0 +1,89 @@
+description: "Smoke test for CI – covers all scheduler variations with dummy data."
+experiments:
+  - run_id: smoke_asha_baseline
+    seed: 0
+    dataset:
+      type: FakeData
+      size: 500
+      num_classes: 10
+      image_size: [3, 32, 32]
+    model:
+      type: ResNet20
+    training:
+      batch_size: 32
+      epochs: 2
+      num_workers: 0
+      optimizer:
+        name: SGD
+        lr: 0.01
+        momentum: 0.9
+    evaluation:
+      threshold: 0.2
+  - run_id: smoke_asha_random_warm
+    seed: 0
+    dataset:
+      type: FakeData
+      size: 500
+      num_classes: 10
+      image_size: [3, 32, 32]
+    model:
+      type: ResNet20
+    training:
+      batch_size: 32
+      epochs: 2
+      num_workers: 0
+      optimizer:
+        name: SGD
+        lr: 0.01
+        momentum: 0.9
+      warm_start:
+        type: random
+        sigma: 0.01
+    evaluation:
+      threshold: 0.2
+  - run_id: smoke_asha_ohgw_1step
+    seed: 0
+    dataset:
+      type: FakeData
+      size: 500
+      num_classes: 10
+      image_size: [3, 32, 32]
+    model:
+      type: ResNet20
+    training:
+      batch_size: 32
+      epochs: 2
+      num_workers: 0
+      optimizer:
+        name: SGD
+        lr: 0.01
+        momentum: 0.9
+      warm_start:
+        type: ohgw
+        eta: 0.001
+        steps: 1
+    evaluation:
+      threshold: 0.2
+  - run_id: smoke_asha_ohgw_3step
+    seed: 0
+    dataset:
+      type: FakeData
+      size: 500
+      num_classes: 10
+      image_size: [3, 32, 32]
+    model:
+      type: ResNet20
+    training:
+      batch_size: 32
+      epochs: 2
+      num_workers: 0
+      optimizer:
+        name: SGD
+        lr: 0.01
+        momentum: 0.9
+      warm_start:
+        type: ohgw
+        eta: 0.001
+        steps: 3
+    evaluation:
+      threshold: 0.2

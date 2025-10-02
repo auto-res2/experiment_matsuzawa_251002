@@ -1,0 +1,104 @@
+description: "Exp-1: CIFAR-10 efficiency gains of One-Shot Hyper-Gradient Warm-Starts (OHGW)."
+experiments:
+  - run_id: asha-baseline
+    seed: 0
+    dataset:
+      type: CIFAR10
+      root: ./data
+      randaugment_magnitude: 9
+      cutout: true
+      label_smoothing: 0.1
+      val_split: 0.1
+    model:
+      type: ResNet20
+    training:
+      batch_size: 128
+      epochs: 200
+      num_workers: 4
+      optimizer:
+        name: SGD
+        lr: 0.1
+        momentum: 0.9
+      weight_decay: 0.0001
+    evaluation:
+      threshold: 0.93
+
+  - run_id: asha-random-warm
+    seed: 0
+    dataset:
+      type: CIFAR10
+      root: ./data
+      randaugment_magnitude: 9
+      cutout: true
+      label_smoothing: 0.1
+      val_split: 0.1
+    model:
+      type: ResNet20
+    training:
+      batch_size: 128
+      epochs: 200
+      num_workers: 4
+      optimizer:
+        name: SGD
+        lr: 0.1
+        momentum: 0.9
+      weight_decay: 0.0001
+      warm_start:
+        type: random
+        sigma: 0.01
+    evaluation:
+      threshold: 0.93
+
+  - run_id: asha-ohgw-1step
+    seed: 0
+    dataset:
+      type: CIFAR10
+      root: ./data
+      randaugment_magnitude: 9
+      cutout: true
+      label_smoothing: 0.1
+      val_split: 0.1
+    model:
+      type: ResNet20
+    training:
+      batch_size: 128
+      epochs: 200
+      num_workers: 4
+      optimizer:
+        name: SGD
+        lr: 0.1
+        momentum: 0.9
+      weight_decay: 0.0001
+      warm_start:
+        type: ohgw
+        eta: 0.001
+        steps: 1
+    evaluation:
+      threshold: 0.93
+
+  - run_id: asha-ohgw-3step
+    seed: 0
+    dataset:
+      type: CIFAR10
+      root: ./data
+      randaugment_magnitude: 9
+      cutout: true
+      label_smoothing: 0.1
+      val_split: 0.1
+    model:
+      type: ResNet20
+    training:
+      batch_size: 128
+      epochs: 200
+      num_workers: 4
+      optimizer:
+        name: SGD
+        lr: 0.1
+        momentum: 0.9
+      weight_decay: 0.0001
+      warm_start:
+        type: ohgw
+        eta: 0.001
+        steps: 3
+    evaluation:
+      threshold: 0.93
