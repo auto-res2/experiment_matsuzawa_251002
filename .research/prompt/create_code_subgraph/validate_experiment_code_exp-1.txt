@@ -198,6 +198,6 @@ Footnote *: random-warm uses identical σ distribution as the empirical magnitud
 Compare the Base Code with the Derived Experiment Code for this specific experiment thoroughly. Ensure the derived code maintains all the quality, completeness, and functionality of the base code while properly replacing placeholders with specific implementations.
 Output:
 {
-    "is_experiment_code_ready": true,
-    "experiment_code_issue": ""
+    "is_experiment_code_ready": false,
+    "experiment_code_issue": "Functionality from the base implementation was removed:\n1. preprocess.load_dataset no longer supports the generic dummy dataset nor the MNIST option that existed in the base code; only CIFAR-10 is accepted, so earlier capabilities are lost.\n2. model.get_model previously fell back to SimpleCNN for unknown names; the new version raises ValueError, removing a safety fallback.\nThese omissions violate the “complete implementation preservation” requirement."
 }
