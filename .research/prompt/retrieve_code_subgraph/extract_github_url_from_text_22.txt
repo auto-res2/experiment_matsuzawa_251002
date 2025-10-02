@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+The study formalizes hyperparameter optimization in federated learning (FL) and adapts standard non-federated algorithms (Random Search, Successive Halving) to form baselines. The core method, FedEx, exploits a connection between FL hyperparameter tuning and NAS weight-sharing. It frames the personalized tuning objective as a single-level empirical risk minimization and applies a stochastic relaxation. FedEx alternates between a standard SGD-like update for model weights and an exponentiated gradient update for a categorical distribution over local hyperparameters. It is applicable to FL methods decomposable into local training (Locc) and aggregation (Aggb). A 'local perturbation' scheme is used for selecting initial hyperparameter configurations to ensure stability. For theoretical analysis, the ARUBA (Average Regret-Upper-Bound Analysis) framework is used to prove guarantees for a FedEx variant tuning client step-sizes in an online convex optimization setting.
+
+# GitHub URLs List
+['https://github.com/mkhodak/fedex', 'https://github.com/TalwalkarLab/leaf']
+Output:
+{
+    "index": 0
+}
