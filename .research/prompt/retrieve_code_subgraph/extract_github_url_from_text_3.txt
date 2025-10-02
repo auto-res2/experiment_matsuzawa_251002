@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+The core methodology is the 'new linear scaling rule,' which simplifies HPO by reducing the search for optimal learning rate (η) and number of steps (T) to a single scalar variable, r = η × T. The method estimates r for small privacy budgets (ε) using random search to find two empirical points (ε1, r(ε1)) and (ε2, r(ε2)). It then fits a linear approximation to these points to estimate the optimal r for any desired target εf. The theoretical intuition is motivated by analyzing the excess empirical risk of private Gradient Descent (GD) and bounding the 'noisy radius,' the distance between noisy and non-noisy iterates, which is shown to be proportional to η × T. The method incorporates specific design choices to maximize the signal-to-noise ratio and accelerate training: full batch gradient computation (DP-GD), unit clipping (C=1), zero initialization of linear classifiers, SGD with momentum (ρ=0.9), and Privacy Loss Variable (PLV) accounting, which offers tighter privacy guarantees than RDP.
+
+# GitHub URLs List
+['https://github.com/huggingface/transfer-learning-conv-ai', 'https://github.com/lxuechen/private-transformers']
+Output:
+{
+    "index": 1
+}
