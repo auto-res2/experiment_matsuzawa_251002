@@ -1,0 +1,84 @@
+# config/full_experiment.yaml
+# Complete set of four experiment variations for exp-2 (WikiText-103 LM)
+
+experiments:
+  # ---------------------------------------------------------------------
+  # 1) PASHA baseline (no OHGW)
+  # ---------------------------------------------------------------------
+  - run_id: pasha-baseline
+    task_type: lm
+    dataset_name: wikitext103
+    model_name: gpt2-small-scratch
+    batch_size: 4                # sequences per GPU (≈4096 tokens)
+    seq_len: 1024
+    epochs: 50
+    seed: 0
+    optimizer: adamw
+    target_metric: 30            # perplexity ≤30 (val)
+    eta_h: 0.0                   # *no* hyper-gradient step
+    hyperparams:
+      log_lr: -4.0               # 1e-4 initial lr (log10)
+      log_wd: -2.0               # 1e-2 weight decay
+      momentum: 0.9              # unused by AdamW but kept
+
+  # ---------------------------------------------------------------------
+  # 2) PASHA + OHGW (vision-tuned η_h)
+  # ---------------------------------------------------------------------
+  - run_id: pasha-ohgw-vision-tuned-eta
+    task_type: lm
+    dataset_name: wikitext103
+    model_name: gpt2-small-scratch
+    batch_size: 4
+    seq_len: 1024
+    epochs: 50
+    seed: 1
+    optimizer: adamw
+    target_metric: 30
+    eta_h: 0.001                 # vision-tuned value transferred as-is
+    hyperparams:
+      log_lr: -4.0
+      log_wd: -2.0
+      momentum: 0.9
+
+  # ---------------------------------------------------------------------
+  # 3) PASHA + OHGW (low η_h)
+  # ---------------------------------------------------------------------
+  - run_id: pasha-ohgw-low-eta
+    task_type: lm
+    dataset_name: wikitext103
+    model_name: gpt2-small-scratch
+    batch_size: 4
+    seq_len: 1024
+    epochs: 50
+    seed: 2
+    optimizer: adamw
+    target_metric: 30
+    eta_h: 0.0003                # lower hyper-learning-rate
+    hyperparams:
+      log_lr: -4.0
+      log_wd: -2.0
+      momentum: 0.9
+
+  # ---------------------------------------------------------------------
+  # 4) PASHA + OHGW with 15 % noisy tokens
+  # ---------------------------------------------------------------------
+  - run_id: pasha-ohgw-noisy-data
+    task_type: lm
+    dataset_name: wikitext103
+    model_name: gpt2-small-scratch
+    batch_size: 4
+    seq_len: 1024
+    epochs: 50
+    seed: 3
+    optimizer: adamw
+    target_metric: 30
+    eta_h: 0.001
+    noise_ratio: 0.15            # handled by data-layer wrapper (future work)
+    hyperparams:
+      log_lr: -4.0
+      log_wd: -2.0
+      momentum: 0.9
+
+# ---------------------------------------------------------------------------
+# End of experiment list ----------------------------------------------------
+# ---------------------------------------------------------------------------

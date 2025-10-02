@@ -1,0 +1,65 @@
+# config/smoke_test.yaml
+# Lightweight versions of all four experiment variations using the dummy
+# dataset / model so that CI can finish within seconds.
+
+experiments:
+  - run_id: pasha-baseline-smoke
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 16
+    epochs: 1
+    seed: 0
+    target_metric: 0.5
+    eta_h: 0.0
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+
+  - run_id: pasha-ohgw-vision-tuned-eta-smoke
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 16
+    epochs: 1
+    seed: 1
+    target_metric: 0.5
+    eta_h: 0.001
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+
+  - run_id: pasha-ohgw-low-eta-smoke
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 16
+    epochs: 1
+    seed: 2
+    target_metric: 0.5
+    eta_h: 0.0003
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9
+
+  - run_id: pasha-ohgw-noisy-data-smoke
+    dataset_name: dummy
+    model_name: dummy
+    input_shape: [1, 28, 28]
+    num_classes: 10
+    batch_size: 16
+    epochs: 1
+    seed: 3
+    target_metric: 0.5
+    eta_h: 0.001
+    noise_ratio: 0.15  # ignored in dummy run
+    hyperparams:
+      log_lr: -1.0
+      log_wd: -4.0
+      momentum: 0.9

@@ -1,1 +1,21 @@
-# Please list the required python packages.
+[project]
+name = "ohgw_experiments"
+version = "0.1.0"
+description = "OHGW experimental framework"
+authors = [{ name = "AI Research Assistant" }]
+readme = "README.md"
+requires-python = ">=3.9"
+
+[project.dependencies]
+torch = "*"
+pyyaml = "*"
+matplotlib = "*"
+seaborn = "*"
+pandas = "*"
+transformers = "*"
+datasets = "*"
+sentencepiece = "*"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
