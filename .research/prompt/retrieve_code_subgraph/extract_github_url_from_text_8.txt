@@ -1,0 +1,17 @@
+
+Input:
+# Task
+You carefully read the contents of the “Paper Outline” and select one GitHub link from the “GitHub URLs List” that you think is most relevant to the contents.
+# Constraints
+- Output the index number corresponding to the selected GitHub URL.
+- Be sure to select only one GitHub URL.
+- If there is no related GitHub link, output None.
+# Paper Outline
+The core methodology involves training an ensemble of diverse neural networks (DRE) to act as a probabilistic surrogate for HPO, focusing on learning the ranks of hyperparameter configurations' performances. The neural networks are optimized using a weighted list-wise L2R loss, which assigns higher penalties to errors in ranking top-performing configurations. Uncertainty is estimated by training multiple diverse scorers within the ensemble using stochastic gradient descent with different per-scorer seeds. The DRE surrogate is meta-learned from evaluations on previous datasets, and its transfer quality is boosted by incorporating dataset meta-features extracted using a deep set formulation, which condition the scorer functions. During the BO loop, the ensemble's posterior mean and variance of estimated ranks are used by acquisition functions like Expected Improvement (EI) or Lower Confidence Bound (UCB) to guide the search for the next optimal hyperparameter configuration.
+
+# GitHub URLs List
+['https://github.com/releaunifreiburg/HPO-B', 'https://github.com/huawei-noah/HEBO']
+Output:
+{
+    "index": 1
+}
