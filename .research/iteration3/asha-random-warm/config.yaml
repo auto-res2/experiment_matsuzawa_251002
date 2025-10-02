@@ -1,0 +1,25 @@
+dataset:
+  cutout: true
+  label_smoothing: 0.1
+  randaugment_magnitude: 9
+  root: ./data
+  type: CIFAR10
+  val_split: 0.1
+evaluation:
+  threshold: 0.93
+model:
+  type: ResNet20
+run_id: asha-random-warm
+seed: 0
+training:
+  batch_size: 128
+  epochs: 200
+  num_workers: 4
+  optimizer:
+    lr: 0.1
+    momentum: 0.9
+    name: SGD
+  warm_start:
+    sigma: 0.01
+    type: random
+  weight_decay: 0.0001

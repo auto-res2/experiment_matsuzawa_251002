@@ -1,0 +1,32 @@
+/home/toma/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/subprocess.py:1016: RuntimeWarning: line buffering (buffering=1) isn't supported in binary mode, the default buffer size will be used
+  self.stdout = io.open(c2pread, 'rb', bufsize)
+/home/toma/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/subprocess.py:1021: RuntimeWarning: line buffering (buffering=1) isn't supported in binary mode, the default buffer size will be used
+  self.stderr = io.open(errread, 'rb', bufsize)
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:184: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:46: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:66: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:184: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:46: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:66: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:99: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:184: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:46: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:66: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:99: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:184: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:46: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/home/toma/t-80-8-a/_work/experiment_matsuzawa_251002/experiment_matsuzawa_251002/src/train.py:66: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
