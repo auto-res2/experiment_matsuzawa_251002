@@ -48,12 +48,6 @@ jobs:
           > >(tee -a "$ITERATION_DIR/output.txt") \
           2> >(tee -a "$ITERATION_DIR/error.txt" >&2)
         echo "=== [PHASE 2/2] Full experiment end $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
-      VIEW_PROGRESS_COMMAND: |
-        echo "--- [Progress Check at $(date -u)] ---"
-        echo "--- GPU Status ---"
-        if command -v nvidia-smi &> /dev/null; then nvidia-smi --query-gpu=name,utilization.gpu,memory.used --format=csv,noheader; fi
-        echo "--- Latest Log Output ---"
-        tail -n 5 "$ITERATION_DIR/output.txt"
       SEARCH_HF_COMMAND: |
         curl -s -G \
           -H "Authorization: Bearer $HF_TOKEN" \
@@ -117,7 +111,7 @@ jobs:
             3.  Analyze & Fix: If the command fails, you MUST analyze the error and use your tools to fix the code.
             4.  Loop until Success: Repeat step 1 and 2 until the smoke test passes.
             5.  Run Full Experiment: Once the smoke test passes, execute `bash -c "$FULL_EXPERIMENT_COMMAND"`.
-                While the full experiment is running, you MUST periodically execute `bash -c "$VIEW_PROGRESS_COMMAND"` every 10 minutes to monitor the progress.
+                While the full experiment is running, you MUST periodically monitor the progress every 10 minutes.
             6.  Final Fix Loop:** If the full experiment fails, repeat the analyze, fix, and re-run cycle until it succeeds. 
                 A successful run is only confirmed when the final message === [PHASE 2/2] Full experiment end === is present in the output log.
           
