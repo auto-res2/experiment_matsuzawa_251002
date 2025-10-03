@@ -1,0 +1,89 @@
+runs:
+  - run_id: asha-baseline-smoke
+    seed: 0
+    dataset:
+      name: SYNTHETIC
+      input_shape: [1, 28, 28]
+      num_classes: 10
+      num_samples: 256
+    model:
+      name: BASE_CLASSIFIER
+      kwargs: {}
+    optimizer:
+      type: SGD
+      lr: 0.01
+      momentum: 0.9
+    training:
+      batch_size: 32
+      epochs: 2
+      label_smoothing: 0.0
+    warm_start:
+      type: none
+
+  - run_id: asha-random-warm-smoke
+    seed: 1
+    dataset:
+      name: SYNTHETIC
+      input_shape: [1, 28, 28]
+      num_classes: 10
+      num_samples: 256
+    model:
+      name: BASE_CLASSIFIER
+      kwargs: {}
+    optimizer:
+      type: SGD
+      lr: 0.01
+      momentum: 0.9
+    training:
+      batch_size: 32
+      epochs: 2
+      label_smoothing: 0.0
+    warm_start:
+      type: random
+      sigma: 0.01
+
+  - run_id: asha-ohgw-1step-smoke
+    seed: 2
+    dataset:
+      name: SYNTHETIC
+      input_shape: [1, 28, 28]
+      num_classes: 10
+      num_samples: 256
+    model:
+      name: BASE_CLASSIFIER
+      kwargs: {}
+    optimizer:
+      type: SGD
+      lr: 0.01
+      momentum: 0.9
+    training:
+      batch_size: 32
+      epochs: 2
+      label_smoothing: 0.0
+    warm_start:
+      type: hyper
+      eta_h: 0.001
+      steps: 1
+
+  - run_id: asha-ohgw-3step-smoke
+    seed: 3
+    dataset:
+      name: SYNTHETIC
+      input_shape: [1, 28, 28]
+      num_classes: 10
+      num_samples: 256
+    model:
+      name: BASE_CLASSIFIER
+      kwargs: {}
+    optimizer:
+      type: SGD
+      lr: 0.01
+      momentum: 0.9
+    training:
+      batch_size: 32
+      epochs: 2
+      label_smoothing: 0.0
+    warm_start:
+      type: hyper
+      eta_h: 0.001
+      steps: 3

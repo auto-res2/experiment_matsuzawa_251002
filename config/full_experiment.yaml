@@ -1,0 +1,105 @@
+runs:
+  - run_id: asha-baseline
+    seed: 0
+    dataset:
+      name: CIFAR10
+      root: ./data
+      val_split: 5000
+      augment:
+        magnitude: 9
+        cutout_len: 16
+    model:
+      name: RESNET20
+      kwargs:
+        num_classes: 10
+    optimizer:
+      type: SGD
+      lr: 0.1
+      momentum: 0.9
+      weight_decay: 0.0005
+    training:
+      batch_size: 128
+      epochs: 200
+      label_smoothing: 0.1
+    warm_start:
+      type: none
+
+  - run_id: asha-random-warm
+    seed: 0
+    dataset:
+      name: CIFAR10
+      root: ./data
+      val_split: 5000
+      augment:
+        magnitude: 9
+        cutout_len: 16
+    model:
+      name: RESNET20
+      kwargs:
+        num_classes: 10
+    optimizer:
+      type: SGD
+      lr: 0.1
+      momentum: 0.9
+      weight_decay: 0.0005
+    training:
+      batch_size: 128
+      epochs: 200
+      label_smoothing: 0.1
+    warm_start:
+      type: random
+      sigma: 0.01
+
+  - run_id: asha-ohgw-1step
+    seed: 0
+    dataset:
+      name: CIFAR10
+      root: ./data
+      val_split: 5000
+      augment:
+        magnitude: 9
+        cutout_len: 16
+    model:
+      name: RESNET20
+      kwargs:
+        num_classes: 10
+    optimizer:
+      type: SGD
+      lr: 0.1
+      momentum: 0.9
+      weight_decay: 0.0005
+    training:
+      batch_size: 128
+      epochs: 200
+      label_smoothing: 0.1
+    warm_start:
+      type: hyper
+      eta_h: 0.001
+      steps: 1
+
+  - run_id: asha-ohgw-3step
+    seed: 0
+    dataset:
+      name: CIFAR10
+      root: ./data
+      val_split: 5000
+      augment:
+        magnitude: 9
+        cutout_len: 16
+    model:
+      name: RESNET20
+      kwargs:
+        num_classes: 10
+    optimizer:
+      type: SGD
+      lr: 0.1
+      momentum: 0.9
+      weight_decay: 0.0005
+    training:
+      batch_size: 128
+      epochs: 200
+      label_smoothing: 0.1
+    warm_start:
+      type: hyper
+      eta_h: 0.001
+      steps: 3
