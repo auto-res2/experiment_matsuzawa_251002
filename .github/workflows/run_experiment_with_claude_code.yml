@@ -38,52 +38,22 @@ jobs:
         echo "=== [PHASE 1/2] Smoke test PASSED $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
       FULL_EXPERIMENT_COMMAND: |
         set -e
-
         if [ -n "$ITERATION_DIR" ] && [ -d "$ITERATION_DIR" ]; then
           find "$ITERATION_DIR" -mindepth 1 -delete
         fi
         echo "=== [PHASE 2/2] Full experiment start $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
-
         uv run python -u -m src.main \
           --full-experiment \
           --results-dir "$ITERATION_DIR" \
           > >(tee -a "$ITERATION_DIR/output.txt") \
-          2> >(tee -a "$ITERATION_DIR/error.txt" >&2) &
-
-        EXPERIMENT_PID=$!
-        echo "Experiment started in background with PID: $EXPERIMENT_PID"
-
-        while kill -0 $EXPERIMENT_PID 2>/dev/null; do
-          echo ""
-          echo "================================================================================"
-          echo "[$(date -u)] Monitoring experiment (PID: $EXPERIMENT_PID)... Heartbeat OK"
-          echo "================================================================================"
-
-          if command -v nvidia-smi &> /dev/null; then
-            echo "--- GPU Status (Name, Util %, Mem Used / Total MiB) ---"
-            nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total --format=csv,noheader
-          else
-            echo "--- nvidia-smi not found. Skipping GPU status. ---"
-          fi
-
-          echo ""
-          echo "--- Latest Output (last 5 lines of output.txt) ---"
-          tail -n 5 "$ITERATION_DIR/output.txt" || echo "output.txt is empty or waiting for first output..."
-
-          sleep 60
-        done
-
-        wait $EXPERIMENT_PID
-        EXIT_CODE=$?
-
-        if [ $EXIT_CODE -ne 0 ]; then
-          echo "--- Experiment FAILED with exit code $EXIT_CODE. ---"
-          echo "--- Final 30 lines of error log: ---"
-          tail -n 30 "$ITERATION_DIR/error.txt"
-          exit $EXIT_CODE
-        fi
-
+          2> >(tee -a "$ITERATION_DIR/error.txt" >&2)
         echo "=== [PHASE 2/2] Full experiment end $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
+      VIEW_PROGRESS_COMMAND: |
+        echo "--- [Progress Check at $(date -u)] ---"
+        echo "--- GPU Status ---"
+        if command -v nvidia-smi &> /dev/null; then nvidia-smi --query-gpu=name,utilization.gpu,memory.used --format=csv,noheader; fi
+        echo "--- Latest Log Output ---"
+        tail -n 5 "$ITERATION_DIR/output.txt"
       SEARCH_HF_COMMAND: |
         curl -s -G \
           -H "Authorization: Bearer $HF_TOKEN" \
@@ -147,6 +117,7 @@ jobs:
             3.  Analyze & Fix: If the command fails, you MUST analyze the error and use your tools to fix the code.
             4.  Loop until Success: Repeat step 1 and 2 until the smoke test passes.
             5.  Run Full Experiment: Once the smoke test passes, execute `bash -c "$FULL_EXPERIMENT_COMMAND"`.
+                While the full experiment is running, you MUST periodically execute `bash -c "$VIEW_PROGRESS_COMMAND"` every 10 minutes to monitor the progress.
             6.  Final Fix Loop:** If the full experiment fails, repeat the analyze, fix, and re-run cycle until it succeeds. 
                 A successful run is only confirmed when the final message === [PHASE 2/2] Full experiment end === is present in the output log.
           
