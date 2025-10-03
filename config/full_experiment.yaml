@@ -1,0 +1,102 @@
+# config/full_experiment.yaml
+# Complete suite for Experiment-2 (language-modeling on WikiText-103)
+
+runs:
+  - run_id: pasha-baseline
+    seed: 42
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 1024
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.01
+    training:
+      batch_size: 4
+      epochs: 50
+    scheduler:
+      name: PASHA
+      min_epochs: 2
+      max_epochs: 50
+    ohgw:
+      enabled: false
+
+  - run_id: pasha-ohgw-vision-tuned-eta
+    seed: 43
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 1024
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.01
+    training:
+      batch_size: 4
+      epochs: 50
+    scheduler:
+      name: PASHA
+      min_epochs: 2
+      max_epochs: 50
+    ohgw:
+      enabled: true
+      eta_h: 1e-3
+
+  - run_id: pasha-ohgw-low-eta
+    seed: 44
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 1024
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.01
+    training:
+      batch_size: 4
+      epochs: 50
+    scheduler:
+      name: PASHA
+      min_epochs: 2
+      max_epochs: 50
+    ohgw:
+      enabled: true
+      eta_h: 3e-4
+
+  - run_id: pasha-ohgw-noisy-data
+    seed: 45
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 1024
+      noise_fraction: 0.15   # introduce token noise for robustness test
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.01
+    training:
+      batch_size: 4
+      epochs: 50
+    scheduler:
+      name: PASHA
+      min_epochs: 2
+      max_epochs: 50
+    ohgw:
+      enabled: true
+      eta_h: 1e-3

@@ -1,0 +1,99 @@
+# config/smoke_test.yaml
+# Lightweight smoke-test covering all run variations with *tiny* slices of the
+# real dataset to keep CI runtime <30 s.
+
+runs:
+  - run_id: pasha-baseline-smoke
+    seed: 0
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 64
+      sample_size: 2048   # only 2k lines for speed
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.0
+    training:
+      batch_size: 2
+      epochs: 1
+    scheduler:
+      name: PASHA
+    ohgw:
+      enabled: false
+
+  - run_id: pasha-ohgw-vision-tuned-eta-smoke
+    seed: 0
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 64
+      sample_size: 2048
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.0
+    training:
+      batch_size: 2
+      epochs: 1
+    scheduler:
+      name: PASHA
+    ohgw:
+      enabled: true
+      eta_h: 1e-3
+
+  - run_id: pasha-ohgw-low-eta-smoke
+    seed: 0
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 64
+      sample_size: 2048
+      noise_fraction: 0.0
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.0
+    training:
+      batch_size: 2
+      epochs: 1
+    scheduler:
+      name: PASHA
+    ohgw:
+      enabled: true
+      eta_h: 3e-4
+
+  - run_id: pasha-ohgw-noisy-data-smoke
+    seed: 0
+    task: language_modeling
+    dataset:
+      name: wikitext-103
+      seq_len: 64
+      sample_size: 2048
+      noise_fraction: 0.15
+    model:
+      name: gpt2_small_lm
+      kwargs: {}
+    optimizer:
+      type: AdamW
+      lr: 5e-4
+      weight_decay: 0.0
+    training:
+      batch_size: 2
+      epochs: 1
+    scheduler:
+      name: PASHA
+    ohgw:
+      enabled: true
+      eta_h: 1e-3
