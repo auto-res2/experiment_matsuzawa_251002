@@ -38,15 +38,51 @@ jobs:
         echo "=== [PHASE 1/2] Smoke test PASSED $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
       FULL_EXPERIMENT_COMMAND: |
         set -e
+
         if [ -n "$ITERATION_DIR" ] && [ -d "$ITERATION_DIR" ]; then
           find "$ITERATION_DIR" -mindepth 1 -delete
         fi
         echo "=== [PHASE 2/2] Full experiment start $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
+
         uv run python -u -m src.main \
           --full-experiment \
           --results-dir "$ITERATION_DIR" \
           > >(tee -a "$ITERATION_DIR/output.txt") \
-          2> >(tee -a "$ITERATION_DIR/error.txt" >&2)
+          2> >(tee -a "$ITERATION_DIR/error.txt" >&2) &
+
+        EXPERIMENT_PID=$!
+        echo "Experiment started in background with PID: $EXPERIMENT_PID"
+
+        while kill -0 $EXPERIMENT_PID 2>/dev/null; do
+          echo ""
+          echo "================================================================================"
+          echo "[$(date -u)] Monitoring experiment (PID: $EXPERIMENT_PID)... Heartbeat OK"
+          echo "================================================================================"
+
+          if command -v nvidia-smi &> /dev/null; then
+            echo "--- GPU Status (Name, Util %, Mem Used / Total MiB) ---"
+            nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total --format=csv,noheader
+          else
+            echo "--- nvidia-smi not found. Skipping GPU status. ---"
+          fi
+
+          echo ""
+          echo "--- Latest Output (last 5 lines of output.txt) ---"
+          tail -n 5 "$ITERATION_DIR/output.txt" || echo "output.txt is empty or waiting for first output..."
+
+          sleep 60
+        done
+
+        wait $EXPERIMENT_PID
+        EXIT_CODE=$?
+
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "--- Experiment FAILED with exit code $EXIT_CODE. ---"
+          echo "--- Final 30 lines of error log: ---"
+          tail -n 30 "$ITERATION_DIR/error.txt"
+          exit $EXIT_CODE
+        fi
+
         echo "=== [PHASE 2/2] Full experiment end $(date -u) ===" | tee -a "$ITERATION_DIR/output.txt"
       SEARCH_HF_COMMAND: |
         curl -s -G \
