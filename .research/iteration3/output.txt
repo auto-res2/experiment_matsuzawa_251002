@@ -1,15 +1,37 @@
-=== [PHASE 2/2] Full experiment start Fri Oct  3 08:04:55 AM UTC 2025 ===
+=== [PHASE 2/2] Full experiment start Fri Oct  3 08:24:56 AM UTC 2025 ===
 Running 4 experiment variations defined in config/full_experiment.yaml
 
 ========== Starting run: asha-baseline ==========
-{"run_id": "asha-baseline", "epoch": 1, "train_loss": 1.9418435052871703, "train_acc": 0.3160222222222222, "val_loss": 1.7159629589080811, "val_acc": 0.4448}
-{"run_id": "asha-baseline", "epoch": 2, "train_loss": 1.6318829785029094, "train_acc": 0.47864444444444443, "val_loss": 1.4241779014587401, "val_acc": 0.5724}
-{"run_id": "asha-baseline", "epoch": 3, "train_loss": 1.4675308727264404, "train_acc": 0.5604444444444444, "val_loss": 1.5059509288787842, "val_acc": 0.5822}
-{"run_id": "asha-baseline", "epoch": 4, "train_loss": 1.3751360009087457, "train_acc": 0.6080888888888889, "val_loss": 1.426721759223938, "val_acc": 0.6358}
-{"run_id": "asha-baseline", "epoch": 5, "train_loss": 1.3188459654066298, "train_acc": 0.6348, "val_loss": 1.6584214561462403, "val_acc": 0.5272}
-{"run_id": "asha-baseline", "epoch": 6, "train_loss": 1.2901458726671007, "train_acc": 0.6497333333333334, "val_loss": 1.1901038318634034, "val_acc": 0.698}
-{"run_id": "asha-baseline", "epoch": 7, "train_loss": 1.2516157928466798, "train_acc": 0.6653555555555556, "val_loss": 1.1350904563903808, "val_acc": 0.7256}
-{"run_id": "asha-baseline", "epoch": 8, "train_loss": 1.235995046234131, "train_acc": 0.6762888888888889, "val_loss": 1.3524742067337037, "val_acc": 0.6302}
-{"run_id": "asha-baseline", "epoch": 9, "train_loss": 1.219115393341912, "train_acc": 0.6855333333333333, "val_loss": 1.1151176069259643, "val_acc": 0.73}
-{"run_id": "asha-baseline", "epoch": 10, "train_loss": 1.2018988282733494, "train_acc": 0.6910222222222222, "val_loss": 1.3263620412826538, "val_acc": 0.6562}
-{"run_id": "asha-baseline", "epoch": 11, "train_loss": 1.1958950465944078, "train_acc": 0.691, "val_loss": 1.2141652742385864, "val_acc": 0.701}
+{"run_id": "asha-baseline", "epoch": 1, "train_loss": 1.9252872674306234, "train_acc": 0.3269111111111111, "val_loss": 1.8484721771240233, "val_acc": 0.4208}
+{"run_id": "asha-baseline", "epoch": 2, "train_loss": 1.617068070496453, "train_acc": 0.49077777777777776, "val_loss": 1.6761225481033326, "val_acc": 0.497}
+{"run_id": "asha-baseline", "epoch": 3, "train_loss": 1.4752822693718803, "train_acc": 0.5568666666666666, "val_loss": 1.4154817104339599, "val_acc": 0.608}
+{"run_id": "asha-baseline", "epoch": 4, "train_loss": 1.3878870933532714, "train_acc": 0.6058444444444444, "val_loss": 1.3745014152526855, "val_acc": 0.6188}
+{"run_id": "asha-baseline", "epoch": 5, "train_loss": 1.3287248456319174, "train_acc": 0.6292666666666666, "val_loss": 1.6374940605163575, "val_acc": 0.5566}
+{"run_id": "asha-baseline", "epoch": 6, "train_loss": 1.293479758199056, "train_acc": 0.647, "val_loss": 1.205792409324646, "val_acc": 0.6936}
+{"run_id": "asha-baseline", "epoch": 7, "train_loss": 1.2555809298409355, "train_acc": 0.6648, "val_loss": 1.2070522750854493, "val_acc": 0.6892}
+{"run_id": "asha-baseline", "epoch": 8, "train_loss": 1.2372151148054336, "train_acc": 0.6731555555555555, "val_loss": 1.151947749900818, "val_acc": 0.7182}
+{"run_id": "asha-baseline", "epoch": 9, "train_loss": 1.2250096479203967, "train_acc": 0.6820444444444445, "val_loss": 1.1721511716842652, "val_acc": 0.7056}
+{"run_id": "asha-baseline", "epoch": 10, "train_loss": 1.2038522803836398, "train_acc": 0.6883777777777778, "val_loss": 1.4753435859680175, "val_acc": 0.623}
+{"run_id": "asha-baseline", "epoch": 11, "train_loss": 1.1954026313357884, "train_acc": 0.6950888888888889, "val_loss": 1.5673507164001466, "val_acc": 0.6024}
+{"run_id": "asha-baseline", "epoch": 12, "train_loss": 1.1859740683237712, "train_acc": 0.6998222222222222, "val_loss": 1.0804410480499267, "val_acc": 0.7548}
+{"run_id": "asha-baseline", "epoch": 13, "train_loss": 1.1771907921473186, "train_acc": 0.7037333333333333, "val_loss": 1.1096466245651244, "val_acc": 0.75}
+{"run_id": "asha-baseline", "epoch": 14, "train_loss": 1.1628405570771958, "train_acc": 0.7085555555555556, "val_loss": 1.1242708139419555, "val_acc": 0.7334}
+{"run_id": "asha-baseline", "epoch": 15, "train_loss": 1.159785938665602, "train_acc": 0.7118888888888889, "val_loss": 1.0145332447052002, "val_acc": 0.7816}
+{"run_id": "asha-baseline", "epoch": 16, "train_loss": 1.1506172606362237, "train_acc": 0.715, "val_loss": 1.1299198654174805, "val_acc": 0.737}
+{"run_id": "asha-baseline", "epoch": 17, "train_loss": 1.147964080174764, "train_acc": 0.7156444444444444, "val_loss": 1.1003881500244141, "val_acc": 0.7484}
+{"run_id": "asha-baseline", "epoch": 18, "train_loss": 1.1382233676486546, "train_acc": 0.7203777777777778, "val_loss": 1.0754713611602784, "val_acc": 0.7532}
+{"run_id": "asha-baseline", "epoch": 19, "train_loss": 1.1336521719614665, "train_acc": 0.7230222222222222, "val_loss": 1.2011193351745606, "val_acc": 0.7076}
+{"run_id": "asha-baseline", "epoch": 20, "train_loss": 1.1345483303070067, "train_acc": 0.7245333333333334, "val_loss": 1.0021008100509643, "val_acc": 0.785}
+{"run_id": "asha-baseline", "epoch": 21, "train_loss": 1.1334237280315822, "train_acc": 0.7246, "val_loss": 1.1917246477127075, "val_acc": 0.712}
+{"run_id": "asha-baseline", "epoch": 22, "train_loss": 1.1239647850884331, "train_acc": 0.7260444444444445, "val_loss": 1.0421527267456054, "val_acc": 0.7676}
+{"run_id": "asha-baseline", "epoch": 23, "train_loss": 1.1275322237650554, "train_acc": 0.7276888888888889, "val_loss": 1.2381108470916748, "val_acc": 0.6772}
+{"run_id": "asha-baseline", "epoch": 24, "train_loss": 1.1161509751001994, "train_acc": 0.7312222222222222, "val_loss": 1.0269519996643066, "val_acc": 0.7812}
+{"run_id": "asha-baseline", "epoch": 25, "train_loss": 1.118312360021803, "train_acc": 0.7306222222222222, "val_loss": 1.099645743560791, "val_acc": 0.7518}
+{"run_id": "asha-baseline", "epoch": 26, "train_loss": 1.115950876405504, "train_acc": 0.7315333333333334, "val_loss": 1.134574959564209, "val_acc": 0.7434}
+{"run_id": "asha-baseline", "epoch": 27, "train_loss": 1.1092465335210164, "train_acc": 0.7333333333333333, "val_loss": 1.1732956844329834, "val_acc": 0.7242}
+{"run_id": "asha-baseline", "epoch": 28, "train_loss": 1.1066925759209527, "train_acc": 0.7343777777777778, "val_loss": 1.1377738529205321, "val_acc": 0.7298}
+{"run_id": "asha-baseline", "epoch": 29, "train_loss": 1.108158185365465, "train_acc": 0.7361555555555556, "val_loss": 1.0296057205200195, "val_acc": 0.7706}
+{"run_id": "asha-baseline", "epoch": 30, "train_loss": 1.104312529542711, "train_acc": 0.7379777777777777, "val_loss": 1.014808616065979, "val_acc": 0.7872}
+{"run_id": "asha-baseline", "epoch": 31, "train_loss": 1.1028337284300063, "train_acc": 0.7377333333333334, "val_loss": 1.177725163078308, "val_acc": 0.7348}
+{"run_id": "asha-baseline", "epoch": 32, "train_loss": 1.0996169687694974, "train_acc": 0.7390666666666666, "val_loss": 0.9742853847503662, "val_acc": 0.8082}
+{"run_id": "asha-baseline", "epoch": 33, "train_loss": 1.0968958528518677, "train_acc": 0.7414444444444445, "val_loss": 1.0017549415588378, "val_acc": 0.7798}
