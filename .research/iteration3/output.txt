@@ -1,0 +1,7 @@
+=== [PHASE 2/2] Full experiment start $(date -u) ===
+Running 4 experiment variations defined in config/full_experiment.yaml
+
+========== Starting run: pasha-baseline ==========
+Token indices sequence length is longer than the specified maximum sequence length for this model (1063 > 1024). Running this sequence through the model will result in indexing errors
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{"run_id": "pasha-baseline", "epoch": 1, "train_loss": 3.1943252145190217, "train_ppl": 24.393707617658244, "val_loss": 2.999352705429204, "val_ppl": 20.072539871100194}

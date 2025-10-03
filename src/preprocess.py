@@ -15,6 +15,13 @@ from typing import Tuple, Any
 import torch
 from torch.utils.data import Dataset, DataLoader
 
+try:
+    from datasets import load_dataset
+    from transformers import AutoTokenizer
+except ImportError:
+    load_dataset = None
+    AutoTokenizer = None
+
 # -------------------------------- Placeholders ------------------------------ #
 
 class RandomClassificationDataset(Dataset):
@@ -39,6 +46,50 @@ class RandomClassificationDataset(Dataset):
         return x, y
 
 
+class WikiTextDataset(Dataset):
+    """WikiText dataset for language modeling tasks."""
+
+    def __init__(self, texts, tokenizer, seq_len: int, noise_fraction: float = 0.0):
+        super().__init__()
+        self.tokenizer = tokenizer
+        self.seq_len = seq_len
+        self.noise_fraction = noise_fraction
+
+        # Tokenize all texts and concatenate
+        all_tokens = []
+        for text in texts:
+            if text.strip():
+                tokens = tokenizer.encode(text, add_special_tokens=False)
+                all_tokens.extend(tokens)
+
+        # Split into chunks of seq_len
+        self.examples = []
+        for i in range(0, len(all_tokens) - seq_len, seq_len):
+            chunk = all_tokens[i:i + seq_len]
+            if len(chunk) == seq_len:
+                self.examples.append(chunk)
+
+    def __len__(self) -> int:
+        return len(self.examples)
+
+    def __getitem__(self, idx: int):
+        tokens = self.examples[idx].copy()
+
+        # Apply noise if requested
+        if self.noise_fraction > 0.0:
+            import random
+            num_noise = int(len(tokens) * self.noise_fraction)
+            vocab_size = self.tokenizer.vocab_size
+            for _ in range(num_noise):
+                pos = random.randint(0, len(tokens) - 1)
+                tokens[pos] = random.randint(0, vocab_size - 1)
+
+        return {
+            "input_ids": torch.tensor(tokens, dtype=torch.long),
+            "attention_mask": torch.ones(len(tokens), dtype=torch.long),
+        }
+
+
 # -------------------------- Dataloader factory ------------------------------ #
 
 def _create_placeholder_dataset(cfg: dict, split: str):
@@ -60,6 +111,32 @@ def _create_placeholder_dataset(cfg: dict, split: str):
                 input_shape=tuple(ds_cfg.get("input_shape", [1, 28, 28])),
                 num_classes=int(ds_cfg.get("num_classes", 10)),
             )
+        return dataset
+
+    if name == "WIKITEXT-103":
+        if load_dataset is None or AutoTokenizer is None:
+            raise ImportError("datasets and transformers packages required for WikiText-103")
+
+        # Load tokenizer
+        tokenizer = AutoTokenizer.from_pretrained("gpt2")
+        tokenizer.pad_token = tokenizer.eos_token
+
+        # Load dataset
+        hf_split = "train" if split == "train" else "validation"
+        raw_dataset = load_dataset("wikitext", "wikitext-103-raw-v1", split=hf_split)
+
+        # Extract text
+        texts = raw_dataset["text"]
+
+        # Optionally limit sample size for smoke tests
+        sample_size = ds_cfg.get("sample_size", None)
+        if sample_size is not None:
+            texts = texts[:sample_size]
+
+        seq_len = int(ds_cfg.get("seq_len", 128))
+        noise_fraction = float(ds_cfg.get("noise_fraction", 0.0))
+
+        dataset = WikiTextDataset(texts, tokenizer, seq_len, noise_fraction)
         return dataset
 
     # ---------------------------------------------------------------------

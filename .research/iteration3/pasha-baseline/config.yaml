@@ -1,0 +1,23 @@
+dataset:
+  name: wikitext-103
+  noise_fraction: 0.0
+  seq_len: 1024
+model:
+  kwargs: {}
+  name: gpt2_small_lm
+ohgw:
+  enabled: false
+optimizer:
+  lr: 5e-4
+  type: AdamW
+  weight_decay: 0.01
+run_id: pasha-baseline
+scheduler:
+  max_epochs: 50
+  min_epochs: 2
+  name: PASHA
+seed: 42
+task: language_modeling
+training:
+  batch_size: 4
+  epochs: 50

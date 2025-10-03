@@ -11,6 +11,11 @@ from typing import Dict
 import torch
 import torch.nn as nn
 
+try:
+    from transformers import AutoModelForCausalLM
+except ImportError:
+    AutoModelForCausalLM = None
+
 # ----------------------------- Base classifier ------------------------------ #
 
 class BaseClassifier(nn.Module):
@@ -41,8 +46,16 @@ class BaseClassifier(nn.Module):
 
 # ------------------------------- Registry ----------------------------------- #
 
+def _create_gpt2_small_lm(**kwargs):
+    """Create a small GPT2 model for language modeling."""
+    if AutoModelForCausalLM is None:
+        raise ImportError("transformers package required for GPT2 models")
+    return AutoModelForCausalLM.from_pretrained("gpt2")
+
+
 _MODEL_REGISTRY: Dict[str, nn.Module] = {
     "BASE_CLASSIFIER": BaseClassifier,
+    "GPT2_SMALL_LM": _create_gpt2_small_lm,
     # ---------------------------------------------------------------------
     # PLACEHOLDER: Additional models will be registered here in later phase
     # ---------------------------------------------------------------------
@@ -57,7 +70,11 @@ def create_model(cfg: dict) -> nn.Module:
             f"Model '{name}' unknown to common core – must be provided in specialising step."
         )
     kwargs = mdl_cfg.get("kwargs", {})
-    return _MODEL_REGISTRY[name](**kwargs)
+    model_factory = _MODEL_REGISTRY[name]
+    # Handle both class and function factories
+    if callable(model_factory) and not isinstance(model_factory, type):
+        return model_factory(**kwargs)
+    return model_factory(**kwargs)
 
 
 def save_model(model: nn.Module, path: str) -> None:
