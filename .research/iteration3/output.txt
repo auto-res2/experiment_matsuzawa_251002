@@ -1,0 +1,14 @@
+=== [PHASE 2/2] Full experiment start Fri Oct  3 03:58:48 AM UTC 2025 ===
+Running 4 experiment variations defined in config/full_experiment.yaml
+
+========== Starting run: asha-baseline ==========
+{"run_id": "asha-baseline", "epoch": 1, "train_loss": 1.9011194716347588, "train_acc": 0.33657777777777775, "val_loss": 1.6079744899749755, "val_acc": 0.497}
+{"run_id": "asha-baseline", "epoch": 2, "train_loss": 1.5863940715789795, "train_acc": 0.5027555555555555, "val_loss": 1.47772509765625, "val_acc": 0.5504}
+{"run_id": "asha-baseline", "epoch": 3, "train_loss": 1.4466464106665717, "train_acc": 0.5713111111111111, "val_loss": 1.4047615787506103, "val_acc": 0.6192}
+{"run_id": "asha-baseline", "epoch": 4, "train_loss": 1.363784980032179, "train_acc": 0.6154222222222222, "val_loss": 1.3781007953643798, "val_acc": 0.6346}
+{"run_id": "asha-baseline", "epoch": 5, "train_loss": 1.311730938106113, "train_acc": 0.6383111111111112, "val_loss": 1.278900983428955, "val_acc": 0.6668}
+{"run_id": "asha-baseline", "epoch": 6, "train_loss": 1.2789620119730631, "train_acc": 0.6552888888888889, "val_loss": 1.138058102798462, "val_acc": 0.7246}
+{"run_id": "asha-baseline", "epoch": 7, "train_loss": 1.2499573895348444, "train_acc": 0.6683777777777777, "val_loss": 1.2182854364395141, "val_acc": 0.701}
+{"run_id": "asha-baseline", "epoch": 8, "train_loss": 1.228758454937405, "train_acc": 0.6782666666666667, "val_loss": 1.2351515911102295, "val_acc": 0.688}
+{"run_id": "asha-baseline", "epoch": 9, "train_loss": 1.211540722995334, "train_acc": 0.6875333333333333, "val_loss": 1.1218055738449098, "val_acc": 0.7304}
+{"run_id": "asha-baseline", "epoch": 10, "train_loss": 1.1971889217588636, "train_acc": 0.6936, "val_loss": 1.1464054901123046, "val_acc": 0.7296}
