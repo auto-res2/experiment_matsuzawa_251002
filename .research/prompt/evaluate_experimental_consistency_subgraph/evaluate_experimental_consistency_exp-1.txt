@@ -1,0 +1,219 @@
+
+Input:
+
+# Instructions
+You are a scientific research consistency evaluator. Your task is to evaluate a single experiment to determine:
+1. Whether it is consistent with the proposed method and experimental strategy
+2. Whether the results support the main claims (e.g., proposed method outperforms baseline)
+3. Whether it should be included in the research paper
+
+## Scope Constraints
+- Focus ONLY on evaluating consistency between the proposed method and experimental results
+- Do not suggest infrastructure changes (Docker, lock files, etc.)
+- Do not recommend development/testing procedures (unit tests, synthetic graphs, etc.)
+- Do not suggest implementation details or code improvements
+- Do not recommend data release or reproducibility practices
+- Do not require or suggest experiments on actual hardware (e.g., real edge devices, physical deployment)
+- Evaluate only: method-result alignment, experimental design adequacy, result interpretation validity, and statistical rigor within computational/simulation contexts
+
+Based on your analysis, provide:
+1. `consistency_feedback` (str): Detailed feedback explaining the consistency evaluation and suggestions for improvement
+2. `consistency_score` (int): A score from 1-10 indicating the quality and consistency of the experimental design and results
+
+## Evaluation Criteria
+
+### consistency_feedback (str)
+Provide specific feedback focused on **scientific consistency evaluation** and **clearly categorize the source of any issues**:
+
+**Problem Categorization - Identify which area(s) need improvement:**
+
+1. **Experimental Strategy Issues**:
+   - Evaluate if the experimental strategy is fundamentally sound for validating the proposed method
+   - Assess whether the experimental setup provides adequate scope and rigor
+   - Identify if the chosen metrics, baselines, or evaluation approach are appropriate
+
+2. **Implementation Issues**:
+   - Assess whether the generated code correctly implements the described experimental strategy
+   - Identify gaps between what the strategy specifies and what the code actually does
+   - Point out if the implementation fails to follow the experimental design
+
+3. **Result Interpretation Issues**:
+   - Assess alignment between claimed method and actual experimental results
+   - Identify gaps between theoretical claims and empirical evidence
+   - Point out contradictions between expected and observed outcomes
+   - **Critical**: Check if the proposed method demonstrates improvement over baseline
+
+**For each identified issue, clearly specify:**
+- Which category the problem falls into
+- What specific aspect needs improvement
+- How it affects the paper inclusion decision
+
+### consistency_score (int)
+Provide a numerical score (1-10) based on execution status and result quality:
+
+- **1-3: Critical Failure / Not Executed**
+  - The experiment failed to run (e.g., code crash, setup error)
+  - Produced no meaningful output
+  - Implementation was fundamentally flawed, invalidating the results
+  - The primary claims cannot be evaluated
+
+- **4-5: Executed, but Poor or Negative Results**
+  - The experiment ran correctly, but the results are negative
+  - The proposed method performs worse than or shows no meaningful improvement over the baseline
+  - The results contradict or fail to support the primary claims
+
+- **6-7: Executed, Positive but Not Conclusive Results**
+  - The experiment ran correctly and shows clear positive improvement over the baseline
+  - Results align with the primary claims
+  - Evidence is weakened by minor issues in scientific rigor (e.g., single-seed runs, lack of statistical tests, limited scope)
+  - The results are suggestive but not definitive
+
+- **8-10: Executed, Conclusive and High-Impact Results**
+  - The experiment ran correctly and provides strong, reliable evidence supporting the primary claims
+  - Results are clearly superior to the baseline
+  - Experimental design demonstrates high scientific rigor (e.g., multiple runs, fair comparisons, statistical validation)
+  - Score of 9-10 indicates particularly impactful and insightful magnitude of improvement
+
+## Context
+
+**Proposed Method:** {
+    "Open Problems": "Even the fastest gray–box and multi-fidelity HPO methods (ASHA, PASHA, DyHPO, BOIL) still waste computation on obviously bad configurations because every trial is treated as a black box; none of the information that is already available inside the training loop – most notably the stochastic hyper-gradient obtained at almost zero cost with automatic differentiation – is used to steer the search. The open problem is: how can we inject very cheap, noisy hyper-gradient signals into existing bandit-style schedulers without redesigning their core logic?",
+    "Methods": "We propose ‘One-Shot Hyper-Gradient Warm-Starts’ (OHGW), a drop-in modification for any Successive-Halving style scheduler (Hyperband / ASHA / PASHA).  1. When a new configuration x is sampled it is run for only one **mini-batch** (≈10-2% of a normal epoch).  2. In this first forward / backward pass we keep the compute graph and call automatic differentiation once more to obtain a single stochastic hyper-gradient ∂L/∂ψ for every continuous hyperparameter ψ (learning-rate, weight-decay, momentum …) exactly as in implicit hyper-gradient papers, but **without unrolling** (cost <1.2× normal mini-batch).  3. We apply one hyper-parameter update ψ←ψ−η_h ∂L/∂ψ (η_h is a fixed tiny step such as 10-3).  4. The adjusted configuration x′ – which differs from x by at most one gradient step in each hyper-parameter – is what the scheduler subsequently evaluates for its first rung (e.g. 1 epoch).  5. Everything else (promotion rules, budget doubling, stopping) is untouched.  In effect the scheduler still explores the same region, but every candidate is lightly nudged towards a valley before costly training starts.",
+    "Experimental Setup": "Benchmark: CIFAR-10 with ResNet-20 and 5-dim continuous search space {log-lr, log-wd, momentum, augment-magnitude, label-smoothing}.  Scheduler baselines: ASHA, PASHA, DyHPO (their public implementations).  Our variants: ASHA+OHGW, PASHA+OHGW, DyHPO+OHGW (one-line wrapper around trial creation).  Mini-batch for warm-start: 128 images.  Hyper-gradient lr η_h=1e-3, computed with PyTorch autograd; no higher-order terms.  Each method is given the same overall GPU budget (4×V100 for 12 hours) and 50 seeds.  Metrics: (i) best test accuracy reached vs. wall-clock, (ii) total GPU hours until 93% accuracy, (iii) distribution of final hyper-parameters to check bias.",
+    "Experimental Code": "# pseudo-code\nfor cfg in scheduler.sample():\n    model = build_model(cfg)\n    data = next(train_loader)            # one mini-batch\n    loss  = forward_loss(model, data)\n    grads = torch.autograd.grad(loss, cfg.continuous_params())\n    with torch.no_grad():               # one hyper step\n        for p,g in zip(cfg.continuous_params(), grads):\n            p -= eta_h * g\n    scheduler.launch(cfg)               # continue as usual",
+    "Expected Result": "Across all schedules OHGW cuts the median time-to-93%-accuracy by ≈20% (ASHA 11.2→9.0 h, PASHA 7.3→5.8 h, DyHPO 6.1→4.9 h) while keeping the same final accuracy. The added warm-start costs <3% extra compute. Hyper-parameter distributions remain similar, showing no harmful bias.",
+    "Expected Conclusion": "A single stochastic hyper-gradient step collected before the first rung is enough to noticeably reduce wasted resources in bandit-style HPO. Because OHGW requires only two extra autograd calls and no change to the scheduler logic, it can be retro-fitted to almost any existing gray-box optimizer, offering an attractive efficiency boost with negligible engineering effort."
+}
+
+**Overall Experimental Strategy:** Overall Experimental Strategy for Validating One-Shot Hyper-Gradient Warm-Starts (OHGW)
+
+1. Core Hypotheses to Validate
+   a. Efficiency: OHGW reduces wall-clock time and GPU hours needed by bandit-style schedulers to reach a preset performance threshold.
+   b. Performance Preservation: OHGW does not hurt (and ideally preserves or slightly improves) the best final metric attainable by the underlying scheduler.
+   c. Robustness & Variance: OHGW’s benefit is consistent across random seeds, search-space dimensionalities, data sets, model families and scheduler types.
+   d. Generalization: The same one-line wrapper applies without retuning to tasks beyond image classification (e.g. language modelling, tabular, RL) and to both small- and large-scale training loops.
+   e. Cost Overhead: Extra compute, memory and engineering overhead introduced by OHGW remain negligible (<5 % GPU-hours, <10 % peak-memory, ≤20 LoC integration).
+
+2. Experiment Families (all experiments draw from one common pool of settings below)
+   • Task Breadth: vision (CIFAR-10/100, ImageNet-1k), NLP (WikiText-103), tabular (UCI suite), RL (Atari).
+   • Model Breadth: ResNet family, ViT, Transformer-LM, XGBoost, PPO-CNN.
+   • Scheduler Breadth: ASHA, PASHA, DyHPO, Hyperband-BO, BOIL (if open-sourced).
+   • Search-Space Breadth: 3–10 continuous hyper-parameters; mixed discrete+continuous cases to show neutrality to inapplicable params.
+   • Scale Breadth: single-GPU up to 64-GPU distributed training (multi-node pools or simulated via concurrency on the 8×A100 machine).
+
+3. Comparison Axes for Every Experiment
+   • Baseline Scheduler (vanilla).
+   • Baseline + Random Warm-Start in ∆ψ range (controls for mere perturbation).
+   • Baseline + Multiple Hyper-Gradient Steps (ablation to check diminishing returns).
+   • Scheduler-specific SoTA gradient-aware HPO if available (e.g. DyHPO, BOIL) to position OHGW competitively.
+
+4. Metrics & Evaluation Protocol
+   Primary quantitative metrics (reported as median ±IQR over ≥30 seeds):
+      – T@τ: Wall-clock/GPU-hour to reach target score τ (task-specific; chosen so that vanilla reaches it within budget).
+      – Best final validation/test score after fixed budget.
+      – Compute Overhead: (Σ warm-start flop) ⁄ (total flop) and peak VRAM.
+   Secondary diagnostics:
+      – AUC of best-score-vs-time curve (overall sample efficiency).
+      – Seed-wise variance of T@τ and final score.
+      – Hyper-parameter trajectory statistics (mean shift & KL-divergence of posterior over ψ).
+   Qualitative/visual:
+      – Survival plots of promoted configurations per rung.
+      – Heatmaps of hyper-gradient magnitude vs. eventual benefit.
+   Statistical test: two-sided Wilcoxon signed-rank (α=0.05) on paired seeds.
+
+5. Success Criteria (must hold in ≥75 % of experiment tuples)
+   • ≥15 % median reduction in T@τ with p<0.05.
+   • ≤0.2 % relative drop (or improvement) in best final score.
+   • ≤5 % extra GPU-hours and ≤10 % extra peak VRAM.
+   • Std-dev(T@τ) not inflated by more than 10 %.
+
+6. Multi-Perspective Validation Plan
+   • Efficiency: Use identical global budgets and identical seed lists; plot temporal efficiency curves and compute aggregated speed-up ratios.
+   • Performance Preservation: Report final accuracy/F1/return and confidence intervals.
+   • Robustness: Repeat each experiment block with different batch sizes, η_h values (10⁻⁴…10⁻²) and noisy labels; perform sensitivity analysis.
+   • Generalization: Run a “zero-tuning transfer” study—apply the CIFAR-tuned η_h to NLP, RL and tabular tasks unchanged.
+   • Ablations & Controls: Random perturbation, multistep hyper-gradient, frozen discrete params, partial gradient masking.
+   • Scalability: Micro-benchmark warm-start time and memory for 1, 8, 64 GPUs using synthetic workloads.
+
+7. Experimental Logistics
+   • Central harness (Hydra + PyTorch Lightning) to register all trials, guarantee identical I/O pipelines and logging format (wandb/MLflow).
+   • Dedicate 4×A100 per independent replicate to avoid resource contention; schedule via Slurm with cgroup accounting to record accurate GPU-hour usage.
+   • Automated post-processing notebook generates unified tables, statistical tests and publication-ready plots.
+
+8. Risk Mitigation & Contingency
+   • If hyper-gradient extraction fails for exotic layers, fall back to finite-difference on ψ only (flag run but keep in aggregated stats).
+   • If OHGW underperforms on discrete-heavy spaces, isolate continuous subset and document limitation.
+
+This unified strategy guarantees that every forthcoming experiment—regardless of domain—collects commensurate evidence on efficiency, performance, robustness, generality and overhead, enabling a cohesive, multi-angle validation of OHGW’s claimed benefits.
+
+## Current Experiment to Evaluate
+
+**Experiment ID:** exp-1
+
+**Experiment Description:** Objective / Hypothesis: Quantify the raw efficiency gains of One-Shot Hyper-Gradient Warm-Starts (OHGW) for classical image-classification hyper-parameter optimisation and disentangle the effect of merely perturbing the hyper-parameters from using the true hyper-gradient.
+
+Domain & Task: Vision – CIFAR-10 image classification.
+
+Models: ResNet-20 (main), ResNet-50 (sanity-check on a deeper network – evaluated only for the best scheduler variant after selection).
+
+Schedulers under test: ASHA (official implementation in Ray-Tune v2.6).
+
+Search space (5-dim continuous): log10-learning-rate, log10-weight-decay, momentum, RandAugment-magnitude, label-smoothing.
+
+Run variations:
+• asha-baseline – vanilla ASHA.
+• asha-random-warm – perform one random Gaussian step (σ=0.01) in ψ instead of a hyper-gradient step (control).* 
+• asha-ohgw-1step – proposed method (η_h=1e-3, one step).
+• asha-ohgw-3step – same but apply three successive hyper-gradient steps (ablation for diminishing returns).
+
+Datasets & Pre-processing: CIFAR-10, standard train/val/test split = 45k/5k/10k.  Per-image Z-score normalisation, RandAugment (m searchable), Cutout(16), label-smoothing (ε searchable).  Validation set is stratified.
+
+Training loop: 200 epochs (budget for full training), Cosine LR, batch size 128, SGD-M.  Weight initialisation He-normal.  Mixed precision (AMP).  Early-stopping OFF (to reveal full curve).
+
+Evaluation metrics:
+Primary – T@93%: wall-clock hours & GPU hours needed to first reach 93% val accuracy.
+Secondary – best test accuracy after 200 epochs; AUC(score-vs-time); overhead-FLOPs ratio; peak VRAM; seed-wise variance.
+
+Protocol: 32 independent HPO replicates (seed-paired across variations).  Each replicate is allowed 12 A100-GPU hours (4 GPUs×3 h) exactly.  Statistics: median±IQR, Wilcoxon signed-rank (α=0.05) on paired T@93%.
+
+Hyper-parameter sensitivity: inside asha-ohgw-1step, sweep η_h ∈ {1e-4, 3e-4, 1e-3, 3e-3} on an extra 8 seeds; fit LOESS to quantify curvature.
+
+Robustness: inject 10% symmetric label noise on a duplicate run; compare % speed-up retained.
+
+Compute efficiency: PyTorch-Profiler to record FLOPs; NVML + psutil for VRAM/RAM; timestamps logged by Lightning Callbacks.
+
+Example code fragment (within Ray trial):
+```python
+# one-shot HG warm-start
+loss = model(train_mb)                    # forward
+hyper_grads = torch.autograd.grad(loss, cfg.continuous())
+with torch.no_grad():
+    for p, g in zip(cfg.continuous(), hyper_grads):
+        p -= 1e-3 * g                     # η_h
+# hand control back to ASHA
+train_full(cfg)
+```
+
+Computational budget on cluster: 8 concurrent trials * 4 GPUs each = 32 GPUs (< half of node).  Wall-clock expected 18h incl. repeats.
+
+Success criteria: ≥15% lower median T@93% for asha-ohgw-1step than asha-baseline with p<0.05 and ≤0.2% drop in final test accuracy.
+
+Footnote *: random-warm uses identical σ distribution as the empirical magnitude of a hyper-gradient step, ensuring fair energy injection.
+
+**Run Variations:** ['asha-baseline', 'asha-random-warm', 'asha-ohgw-1step', 'asha-ohgw-3step']
+
+**Generated Code:** {"evaluate_py": "", "full_experiment_yaml": "", "main_py": "", "model_py": "", "preprocess_py": "", "pyproject_toml": "", "smoke_test_yaml": "", "train_py": ""}
+
+**Experimental Results:**
+
+- Result: 
+- Error: 
+- Images: ['accuracy_asha-baseline.pdf', 'accuracy_asha-ohgw-1step.pdf', 'accuracy_asha-ohgw-3step.pdf', 'accuracy_asha-random-warm.pdf', 'accuracy_comparison.pdf', 'accuracy_trajectories.pdf', 'training_loss_asha-baseline.pdf', 'training_loss_asha-ohgw-1step.pdf', 'training_loss_asha-ohgw-3step.pdf', 'training_loss_asha-random-warm.pdf']
+
+
+**Primary Goal**: Evaluate whether this specific experiment is consistent, supports the main claims, and should be included in the research paper.
+Output:
+{
+    "consistency_feedback": "Summary\nThe experiment design is largely aligned with the paper’s methodology (bandit-style scheduler, single hyper-gradient step before ASHA, proper controls and metrics).  However, the provided artefacts contain no quantitative outcomes – only a list of figure filenames and an empty “Result:” field.  Consequently, it is impossible to judge (i) whether the experiment actually ran, (ii) how OHGW performed relative to baseline / controls, or (iii) whether statistical tests passed.  Because the primary claims concern a ≥15 % speed-up without accuracy loss, the absence of concrete numbers means the experiment currently offers no evidence.\n\nProblem Categorisation\n1. Experimental Strategy Issues – minor\n   • Scope limited to one scheduler (ASHA) while the overall strategy promises multiple, yet this is acceptable for a targeted efficiency study.\n   • Metrics and success criteria are well specified; design itself is sound.\n\n2. Implementation Issues – likely\n   • Empty result fields suggest the run either crashed or logging/aggregation failed.  Hence we cannot confirm that the code executed the described protocol.\n\n3. Result Interpretation Issues – critical\n   • No numerical results or statistical tests are supplied, so the claim that OHGW reduces T@93 % by ≥15 % cannot be evaluated.\n   • Without evidence, inclusion of this experiment would weaken the paper’s empirical section.\n\nImpact on Inclusion Decision\nUntil executable logs or tables showing T@93 %, best accuracy, overhead, and Wilcoxon p-values are provided, the experiment should NOT be included in the manuscript.  At minimum, supply the median ± IQR for all four variants over the 32 paired seeds and the corresponding p-values.\n\nSuggestions for Improvement (kept within scope)\n• Ensure the evaluation script exports a table (CSV/LaTeX) with all primary metrics and prints statistical test outcomes.\n• Verify the plotting/serialization step so that numerical data are saved alongside the PDFs.\n• Re-run or recover logs if the trials crashed; otherwise report the failure reason.\n",
+    "consistency_score": 2
+}
