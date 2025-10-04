@@ -42,7 +42,7 @@
 }
 
 @misc{panda-2022-new,
-  title        = {New Perspectives on Differentially–Private HPO},
+  title        = {New Perspectives on Differentially--Private HPO},
   author       = {Panda, Rajdip and others},
   year         = {2022},
   note         = {arXiv preprint arXiv:2211.00007}
@@ -91,14 +91,14 @@
 }
 
 @misc{li-2020-multi,
-  title        = {DNN-MFBO: Multi–Fidelity Bayesian Optimisation for DNNs},
+  title        = {DNN-MFBO: Multi--Fidelity Bayesian Optimisation for DNNs},
   author       = {Li, Lisha and others},
   year         = {2020},
   note         = {arXiv preprint arXiv:2002.00014}
 }
 
 @misc{li-2021-batch,
-  title        = {BMBO-DARN: Batch Multi–Fidelity BO with Deep AR Networks},
+  title        = {BMBO-DARN: Batch Multi--Fidelity BO with Deep AR Networks},
   author       = {Li, Lisha and others},
   year         = {2021},
   note         = {arXiv preprint arXiv:2106.00015}
@@ -113,7 +113,6 @@
 \end{filecontents*}
 
 % -------------------------------------------------------------
-
 % The actual paper starts here
 
 \documentclass{article}
@@ -121,45 +120,62 @@
 % ensure that missing images do not stop compilation
 \PassOptionsToPackage{draft}{graphicx}
 
+% -------------------------------------------------------------
+% Packages
+% -------------------------------------------------------------
+
+% Custom conference template (provided by the organisers)
 \usepackage{agents4science_2025}
 
+% Encoding and fonts
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+% Math and symbols
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{nicefrac}
 
+% Graphics and figures
 \usepackage{graphicx}
 \graphicspath{{images/}}   % search path for all graphics
-
 \usepackage{subcaption}
-\usepackage{multirow}
-\usepackage{array}
-\usepackage{tabularx}
-\usepackage{colortbl}
-\usepackage{xcolor}
-
+\usepackage{float}
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}  % silence compatibility warnings
 
-\usepackage{float}
+% Tables
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{booktabs}
 
+% Algorithms
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 
+% Bibliography
+\usepackage[numbers]{natbib}  % required for plainnat style
+
+% Hyperlinks and clever references
 \usepackage{hyperref}
 \usepackage{cleveref}
 
+% Micro–typographic enhancements
 \usepackage{microtype}
-\usepackage{booktabs}
 
-\title{One-Shot Hyper-Gradient Warm-Starts for Bandit-Style Hyperparameter Optimisation}
-
+% -------------------------------------------------------------
+% Metadata
+% -------------------------------------------------------------
+\title{One--Shot Hyper--Gradient Warm--Starts for Bandit--Style Hyperparameter Optimisation}
 \author{AIRAS}
 
+% -------------------------------------------------------------
+% Document starts here
+% -------------------------------------------------------------
 \begin{document}
 
 \maketitle
