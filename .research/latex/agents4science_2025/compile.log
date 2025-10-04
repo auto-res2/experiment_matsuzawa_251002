@@ -7,6 +7,8 @@ L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty)
 (./agents4science_2025.sty
 (/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
 (/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty))
@@ -20,9 +22,6 @@ Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 (/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty))))
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
-(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 For additional information on amsmath, use the `?' option.
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -255,6 +254,7 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
 (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
 No file paper.aux.
 *geometry* driver: auto-detecting
@@ -327,11 +327,8 @@ No file paper.aux.
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
-
-Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
-ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
-your preamble.
- on input line 40.
+Package pgfplots notification 'compat/show suggested version=true': document ha
+s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
@@ -343,405 +340,208 @@ your preamble.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
 
 Package natbib Warning: Citation `bohdal-2022-pasha' on page 1 undefined on inp
-ut line 49.
+ut line 56.
 
 
 Package natbib Warning: Citation `wistuba-2022-supervising' on page 1 undefined
- on input line 49.
+ on input line 56.
 
 
 Package natbib Warning: Citation `chandra-2019-gradient' on page 1 undefined on
- input line 51.
+ input line 58.
 
 
 Package natbib Warning: Citation `bertrand-2020-implicit' on page 1 undefined o
-n input line 51.
+n input line 58.
 
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.53 ...ia remain untouched; from the scheduler^^Y
-                                                  s perspective nothing has ...
-
-
-Underfull \vbox (badness 1122) has occurred while \output is active [1{/var/lib
-/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/
-enc/dvips/base/8r.enc}]
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.55 ...nges on a minimal engineering footprint^^Y
-                                                  ideally a few lines of cod...
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.57 ...lidate OHGW in two contrasting settings^^Y
-                                                  vision (CIFAR-10, ResNet-2...
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.57 ...lling (WikiText-103, GPT2-small, PASHA)^^Y
-                                                  using 56 paired random see...
-
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.67 ...e plan to extend OHGW to mixed discrete^^S
-                                                  continuous spaces, integra...
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 2 undefined on input
- line 67.
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 2 undefined on 
-input line 67.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 2 undefined on input 
-line 67.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 2 undefined on
- input line 67.
-
-
-Package natbib Warning: Citation `bohdal-2022-pasha' on page 2 undefined on inp
-ut line 71.
-
-
-Package natbib Warning: Citation `wistuba-2022-supervising' on page 2 undefined
- on input line 71.
-
-
-Package natbib Warning: Citation `nguyen-2019-bayesian' on page 2 undefined on 
-input line 74.
-
-
-Package natbib Warning: Citation `kadra-2023-scaling' on page 2 undefined on in
-put line 74.
-
 
 Package natbib Warning: Citation `khazi-2023-deep' on page 2 undefined on input
  line 74.
 
 
-Package natbib Warning: Citation `daulton-2020-differentiable' on page 2 undefi
-ned on input line 74.
-
-[2]
-
-Package natbib Warning: Citation `chandra-2019-gradient' on page 3 undefined on
- input line 77.
+Package natbib Warning: Citation `jiang-2024-efficient' on page 2 undefined on 
+input line 74.
 
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 3 undefined o
-n input line 77.
+Package natbib Warning: Citation `panda-2022-new' on page 2 undefined on input 
+line 74.
 
 
-Package natbib Warning: Citation `immer-2023-stochastic' on page 3 undefined on
- input line 77.
+Package natbib Warning: Citation `khodak-2021-federated' on page 2 undefined on
+ input line 74.
 
 
-Package natbib Warning: Citation `killamsetty-2022-automata' on page 3 undefine
-d on input line 80.
+LaTeX Warning: File `accuracy\_asha-baseline.pdf' not found on input line 90.
 
 
-Package natbib Warning: Citation `jiang-2024-efficient' on page 3 undefined on 
-input line 80.
+! Package pdftex.def Error: File `accuracy_asha-baseline.pdf' not found: using 
+draft setting.
 
-
-Package natbib Warning: Citation `li-2020-multi' on page 3 undefined on input l
-ine 80.
-
-
-Package natbib Warning: Citation `li-2021-batch' on page 3 undefined on input l
-ine 80.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 3 undefined on
- input line 83.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 3 undefined on input 
-line 83.
-
-
-Package natbib Warning: Citation `wang-2023-hypo' on page 3 undefined on input 
-line 83.
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.83 ...te{panda-2022-new,wang-2023-hypo}. OHGW^^Y
-                                                  s one-shot nature and tiny...
+l.90 ....7\linewidth]{accuracy\_asha-baseline.pdf}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [2]
+
+LaTeX Warning: File `accuracy\_asha-ohgw-1step.pdf' not found on input line 96.
 
 
-Package natbib Warning: Citation `chandra-2019-gradient' on page 3 undefined on
- input line 92.
+
+! Package pdftex.def Error: File `accuracy_asha-ohgw-1step.pdf' not found: usin
+g draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.96 ...\linewidth]{accuracy\_asha-ohgw-1step.pdf}
+                                                  
+
+LaTeX Warning: File `accuracy\_asha-ohgw-3step.pdf' not found on input line 102
+.
 
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 3 undefined o
-n input line 95.
+! Package pdftex.def Error: File `accuracy_asha-ohgw-3step.pdf' not found: usin
+g draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102 ...linewidth]{accuracy\_asha-ohgw-3step.pdf}
+                                                  
+[3]
+
+LaTeX Warning: File `accuracy\_asha-random-warm.pdf' not found on input line 10
+8.
 
 
-Package natbib Warning: Citation `immer-2023-stochastic' on page 3 undefined on
- input line 95.
+! Package pdftex.def Error: File `accuracy_asha-random-warm.pdf' not found: usi
+ng draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.108 ...inewidth]{accuracy\_asha-random-warm.pdf}
+                                                  
+
+LaTeX Warning: File `accuracy\_comparison.pdf' not found on input line 114.
 
 
-Underfull \vbox (badness 1803) has occurred while \output is active [3]
+! Package pdftex.def Error: File `accuracy_comparison.pdf' not found: using dra
+ft setting.
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 4 undefined o
-n input line 133.
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.114 ...=0.7\linewidth]{accuracy\_comparison.pdf}
+                                                  
 
+Underfull \vbox (badness 10000) has occurred while \output is active [4]
 
-Package natbib Warning: Citation `nguyen-2019-bayesian' on page 4 undefined on 
-input line 133.
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 4 undefined on 
-input line 133.
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 4 undefined on input
- line 133.
+LaTeX Warning: File `accuracy\_trajectories.pdf' not found on input line 120.
 
 
-Package natbib Warning: Citation `bohdal-2022-pasha' on page 4 undefined on inp
-ut line 140.
+! Package pdftex.def Error: File `accuracy_trajectories.pdf' not found: using d
+raft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.120 ....7\linewidth]{accuracy\_trajectories.pdf}
+                                                  
+
+LaTeX Warning: File `training\_loss\_asha-baseline.pdf' not found on input line
+ 126.
 
 
-Package natbib Warning: Citation `wistuba-2022-supervising' on page 4 undefined
- on input line 140.
+! Package pdftex.def Error: File `training_loss_asha-baseline.pdf' not found: u
+sing draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.126 ...width]{training\_loss\_asha-baseline.pdf}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [5]
+
+LaTeX Warning: File `training\_loss\_asha-ohgw-1step.pdf' not found on input li
+ne 132.
 
 
-Underfull \vbox (badness 1033) has occurred while \output is active [4]
-
-LaTeX Warning: File ` images/accuracy\_asha-baseline.pdf ' not found on input l
-ine 174.
-
-
-! Package pdftex.def Error: File `images/accuracy_asha-baseline.pdf' not found:
+! Package pdftex.def Error: File `training_loss_asha-ohgw-1step.pdf' not found:
  using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.174 ...th]{ images/accuracy\_asha-baseline.pdf }
+l.132 ...dth]{training\_loss\_asha-ohgw-1step.pdf}
                                                   
-[5]
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-1step.pdf ' not found on input
- line 180.
+LaTeX Warning: File `training\_loss\_asha-ohgw-3step.pdf' not found on input li
+ne 138.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-1step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-ohgw-3step.pdf' not found:
+ using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.180 ...]{ images/accuracy\_asha-ohgw-1step.pdf }
+l.138 ...dth]{training\_loss\_asha-ohgw-3step.pdf}
                                                   
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-3step.pdf ' not found on input
- line 186.
+Underfull \vbox (badness 10000) has occurred while \output is active [6]
+
+LaTeX Warning: File `training\_loss\_asha-random-warm.pdf' not found on input l
+ine 144.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-3step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-random-warm.pdf' not found
+: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.186 ...]{ images/accuracy\_asha-ohgw-3step.pdf }
-                                                  
-[6]
-
-LaTeX Warning: File ` images/accuracy\_asha-random-warm.pdf ' not found on inpu
-t line 192.
-
-
-! Package pdftex.def Error: File `images/accuracy_asha-random-warm.pdf' not fou
-nd: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.192 ...{ images/accuracy\_asha-random-warm.pdf }
-                                                  
-
-LaTeX Warning: File ` images/accuracy\_comparison.pdf ' not found on input line
- 198.
-
-
-! Package pdftex.def Error: File `images/accuracy_comparison.pdf' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.198 ...width]{ images/accuracy\_comparison.pdf }
+l.144 ...th]{training\_loss\_asha-random-warm.pdf}
                                                   
 
 Underfull \vbox (badness 10000) has occurred while \output is active [7]
 
-LaTeX Warning: File ` images/accuracy\_trajectories.pdf ' not found on input li
-ne 204.
+Package natbib Warning: Citation `jiang-2024-efficient' on page 8 undefined on 
+input line 154.
 
 
-! Package pdftex.def Error: File `images/accuracy_trajectories.pdf' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.204 ...dth]{ images/accuracy\_trajectories.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-baseline.pdf ' not found on i
-nput line 210.
+Package natbib Warning: Citation `khazi-2023-deep' on page 8 undefined on input
+ line 154.
 
 
-! Package pdftex.def Error: File `images/training_loss_asha-baseline.pdf' not f
-ound: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.210 ...mages/training\_loss\_asha-baseline.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [8]
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-1step.pdf ' not found on
- input line 216.
+Package natbib Warning: Citation `panda-2022-new' on page 8 undefined on input 
+line 154.
 
 
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-1step.pdf' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.216 ...ges/training\_loss\_asha-ohgw-1step.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-3step.pdf ' not found on
- input line 222.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-3step.pdf' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.222 ...ges/training\_loss\_asha-ohgw-3step.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [9]
-
-LaTeX Warning: File ` images/training\_loss\_asha-random-warm.pdf ' not found o
-n input line 228.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-random-warm.pdf' no
-t found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.228 ...es/training\_loss\_asha-random-warm.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [10]
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...compute, and does not inflate variance^^Y
-                                                  meeting all pre-registered...
-
-
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.244 ...will extend the idea to mixed discrete^^S
-                                                  continuous spaces, integra...
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 11 undefined on
- input line 244.
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 11 undefined on inpu
-t line 244.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 11 undefined on input
- line 244.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 11 undefined o
-n input line 244.
+Package natbib Warning: Citation `khodak-2021-federated' on page 8 undefined on
+ input line 154.
 
 No file paper.bbl.
 
 Package natbib Warning: There were undefined citations.
 
-[11] (./paper.aux)
+[8] (./paper.aux)
 kpathsea: Running mktexpk --mfmode / --bdpi 600 --mag 1+0/600 --dpi 600 ectt1000
 mktexpk: Running mf-nowin -progname=mf \mode:=ljfour; mag:=1+0/600; nonstopmode; input ectt1000
 This is METAFONT, Version 2.71828182 (TeX Live 2023/Debian) (preloaded base=mf)
@@ -811,11 +611,10 @@ fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols
-/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on paper.pdf (11 pages, 139150 bytes).
+cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on paper.pdf (8 pages, 111443 bytes).
 Transcript written on paper.log.
 This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 The top-level auxiliary file: paper.aux
@@ -824,19 +623,12 @@ Database file #1: references.bib
 Warning--empty journal in bertrand-2020-implicit
 Warning--empty journal in bohdal-2022-pasha
 Warning--empty journal in chandra-2019-gradient
-Warning--empty journal in immer-2023-stochastic
 Warning--empty journal in jiang-2024-efficient
-Warning--empty journal in kadra-2023-scaling
 Warning--empty journal in khazi-2023-deep
 Warning--empty journal in khodak-2021-federated
-Warning--empty journal in killamsetty-2022-automata
-Warning--empty journal in li-2020-multi
-Warning--empty journal in li-2021-batch
-Warning--empty journal in nguyen-2019-bayesian
 Warning--empty journal in panda-2022-new
-Warning--empty journal in wang-2023-hypo
 Warning--empty journal in wistuba-2022-supervising
-(There were 15 warnings)
+(There were 8 warnings)
 This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
@@ -846,6 +638,8 @@ L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty)
 (./agents4science_2025.sty
 (/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
 (/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty))
@@ -859,9 +653,6 @@ Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 (/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty))))
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
-(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 For additional information on amsmath, use the `?' option.
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -1094,6 +885,7 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
 (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
 (./paper.aux)
 *geometry* driver: auto-detecting
@@ -1166,11 +958,8 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
-
-Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
-ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
-your preamble.
- on input line 40.
+Package pgfplots notification 'compat/show suggested version=true': document ha
+s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 (./paper.out) (./paper.out)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
@@ -1183,405 +972,208 @@ your preamble.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
 
 Package natbib Warning: Citation `bohdal-2022-pasha' on page 1 undefined on inp
-ut line 49.
+ut line 56.
 
 
 Package natbib Warning: Citation `wistuba-2022-supervising' on page 1 undefined
- on input line 49.
+ on input line 56.
 
 
 Package natbib Warning: Citation `chandra-2019-gradient' on page 1 undefined on
- input line 51.
+ input line 58.
 
 
 Package natbib Warning: Citation `bertrand-2020-implicit' on page 1 undefined o
-n input line 51.
+n input line 58.
 
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.53 ...ia remain untouched; from the scheduler^^Y
-                                                  s perspective nothing has ...
-
-
-Underfull \vbox (badness 1122) has occurred while \output is active [1{/var/lib
-/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/
-enc/dvips/base/8r.enc}]
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.55 ...nges on a minimal engineering footprint^^Y
-                                                  ideally a few lines of cod...
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.57 ...lidate OHGW in two contrasting settings^^Y
-                                                  vision (CIFAR-10, ResNet-2...
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.57 ...lling (WikiText-103, GPT2-small, PASHA)^^Y
-                                                  using 56 paired random see...
-
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.67 ...e plan to extend OHGW to mixed discrete^^S
-                                                  continuous spaces, integra...
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 2 undefined on input
- line 67.
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 2 undefined on 
-input line 67.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 2 undefined on input 
-line 67.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 2 undefined on
- input line 67.
-
-
-Package natbib Warning: Citation `bohdal-2022-pasha' on page 2 undefined on inp
-ut line 71.
-
-
-Package natbib Warning: Citation `wistuba-2022-supervising' on page 2 undefined
- on input line 71.
-
-
-Package natbib Warning: Citation `nguyen-2019-bayesian' on page 2 undefined on 
-input line 74.
-
-
-Package natbib Warning: Citation `kadra-2023-scaling' on page 2 undefined on in
-put line 74.
-
 
 Package natbib Warning: Citation `khazi-2023-deep' on page 2 undefined on input
  line 74.
 
 
-Package natbib Warning: Citation `daulton-2020-differentiable' on page 2 undefi
-ned on input line 74.
-
-[2]
-
-Package natbib Warning: Citation `chandra-2019-gradient' on page 3 undefined on
- input line 77.
+Package natbib Warning: Citation `jiang-2024-efficient' on page 2 undefined on 
+input line 74.
 
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 3 undefined o
-n input line 77.
+Package natbib Warning: Citation `panda-2022-new' on page 2 undefined on input 
+line 74.
 
 
-Package natbib Warning: Citation `immer-2023-stochastic' on page 3 undefined on
- input line 77.
+Package natbib Warning: Citation `khodak-2021-federated' on page 2 undefined on
+ input line 74.
 
 
-Package natbib Warning: Citation `killamsetty-2022-automata' on page 3 undefine
-d on input line 80.
+LaTeX Warning: File `accuracy\_asha-baseline.pdf' not found on input line 90.
 
 
-Package natbib Warning: Citation `jiang-2024-efficient' on page 3 undefined on 
-input line 80.
+! Package pdftex.def Error: File `accuracy_asha-baseline.pdf' not found: using 
+draft setting.
 
-
-Package natbib Warning: Citation `li-2020-multi' on page 3 undefined on input l
-ine 80.
-
-
-Package natbib Warning: Citation `li-2021-batch' on page 3 undefined on input l
-ine 80.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 3 undefined on
- input line 83.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 3 undefined on input 
-line 83.
-
-
-Package natbib Warning: Citation `wang-2023-hypo' on page 3 undefined on input 
-line 83.
-
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.83 ...te{panda-2022-new,wang-2023-hypo}. OHGW^^Y
-                                                  s one-shot nature and tiny...
+l.90 ....7\linewidth]{accuracy\_asha-baseline.pdf}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [2]
+
+LaTeX Warning: File `accuracy\_asha-ohgw-1step.pdf' not found on input line 96.
 
 
-Package natbib Warning: Citation `chandra-2019-gradient' on page 3 undefined on
- input line 92.
+
+! Package pdftex.def Error: File `accuracy_asha-ohgw-1step.pdf' not found: usin
+g draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.96 ...\linewidth]{accuracy\_asha-ohgw-1step.pdf}
+                                                  
+
+LaTeX Warning: File `accuracy\_asha-ohgw-3step.pdf' not found on input line 102
+.
 
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 3 undefined o
-n input line 95.
+! Package pdftex.def Error: File `accuracy_asha-ohgw-3step.pdf' not found: usin
+g draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102 ...linewidth]{accuracy\_asha-ohgw-3step.pdf}
+                                                  
+[3]
+
+LaTeX Warning: File `accuracy\_asha-random-warm.pdf' not found on input line 10
+8.
 
 
-Package natbib Warning: Citation `immer-2023-stochastic' on page 3 undefined on
- input line 95.
+! Package pdftex.def Error: File `accuracy_asha-random-warm.pdf' not found: usi
+ng draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.108 ...inewidth]{accuracy\_asha-random-warm.pdf}
+                                                  
+
+LaTeX Warning: File `accuracy\_comparison.pdf' not found on input line 114.
 
 
-Underfull \vbox (badness 1803) has occurred while \output is active [3]
+! Package pdftex.def Error: File `accuracy_comparison.pdf' not found: using dra
+ft setting.
 
-Package natbib Warning: Citation `bertrand-2020-implicit' on page 4 undefined o
-n input line 133.
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.114 ...=0.7\linewidth]{accuracy\_comparison.pdf}
+                                                  
 
+Underfull \vbox (badness 10000) has occurred while \output is active [4]
 
-Package natbib Warning: Citation `nguyen-2019-bayesian' on page 4 undefined on 
-input line 133.
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 4 undefined on 
-input line 133.
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 4 undefined on input
- line 133.
+LaTeX Warning: File `accuracy\_trajectories.pdf' not found on input line 120.
 
 
-Package natbib Warning: Citation `bohdal-2022-pasha' on page 4 undefined on inp
-ut line 140.
+! Package pdftex.def Error: File `accuracy_trajectories.pdf' not found: using d
+raft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.120 ....7\linewidth]{accuracy\_trajectories.pdf}
+                                                  
+
+LaTeX Warning: File `training\_loss\_asha-baseline.pdf' not found on input line
+ 126.
 
 
-Package natbib Warning: Citation `wistuba-2022-supervising' on page 4 undefined
- on input line 140.
+! Package pdftex.def Error: File `training_loss_asha-baseline.pdf' not found: u
+sing draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.126 ...width]{training\_loss\_asha-baseline.pdf}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [5]
+
+LaTeX Warning: File `training\_loss\_asha-ohgw-1step.pdf' not found on input li
+ne 132.
 
 
-Underfull \vbox (badness 1033) has occurred while \output is active [4]
-
-LaTeX Warning: File ` images/accuracy\_asha-baseline.pdf ' not found on input l
-ine 174.
-
-
-! Package pdftex.def Error: File `images/accuracy_asha-baseline.pdf' not found:
+! Package pdftex.def Error: File `training_loss_asha-ohgw-1step.pdf' not found:
  using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.174 ...th]{ images/accuracy\_asha-baseline.pdf }
+l.132 ...dth]{training\_loss\_asha-ohgw-1step.pdf}
                                                   
-[5]
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-1step.pdf ' not found on input
- line 180.
+LaTeX Warning: File `training\_loss\_asha-ohgw-3step.pdf' not found on input li
+ne 138.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-1step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-ohgw-3step.pdf' not found:
+ using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.180 ...]{ images/accuracy\_asha-ohgw-1step.pdf }
+l.138 ...dth]{training\_loss\_asha-ohgw-3step.pdf}
                                                   
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-3step.pdf ' not found on input
- line 186.
+Underfull \vbox (badness 10000) has occurred while \output is active [6]
+
+LaTeX Warning: File `training\_loss\_asha-random-warm.pdf' not found on input l
+ine 144.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-3step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-random-warm.pdf' not found
+: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.186 ...]{ images/accuracy\_asha-ohgw-3step.pdf }
-                                                  
-[6]
-
-LaTeX Warning: File ` images/accuracy\_asha-random-warm.pdf ' not found on inpu
-t line 192.
-
-
-! Package pdftex.def Error: File `images/accuracy_asha-random-warm.pdf' not fou
-nd: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.192 ...{ images/accuracy\_asha-random-warm.pdf }
-                                                  
-
-LaTeX Warning: File ` images/accuracy\_comparison.pdf ' not found on input line
- 198.
-
-
-! Package pdftex.def Error: File `images/accuracy_comparison.pdf' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.198 ...width]{ images/accuracy\_comparison.pdf }
+l.144 ...th]{training\_loss\_asha-random-warm.pdf}
                                                   
 
 Underfull \vbox (badness 10000) has occurred while \output is active [7]
 
-LaTeX Warning: File ` images/accuracy\_trajectories.pdf ' not found on input li
-ne 204.
+Package natbib Warning: Citation `jiang-2024-efficient' on page 8 undefined on 
+input line 154.
 
 
-! Package pdftex.def Error: File `images/accuracy_trajectories.pdf' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.204 ...dth]{ images/accuracy\_trajectories.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-baseline.pdf ' not found on i
-nput line 210.
+Package natbib Warning: Citation `khazi-2023-deep' on page 8 undefined on input
+ line 154.
 
 
-! Package pdftex.def Error: File `images/training_loss_asha-baseline.pdf' not f
-ound: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.210 ...mages/training\_loss\_asha-baseline.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [8]
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-1step.pdf ' not found on
- input line 216.
+Package natbib Warning: Citation `panda-2022-new' on page 8 undefined on input 
+line 154.
 
 
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-1step.pdf' not
- found: using draft setting.
+Package natbib Warning: Citation `khodak-2021-federated' on page 8 undefined on
+ input line 154.
 
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.216 ...ges/training\_loss\_asha-ohgw-1step.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-3step.pdf ' not found on
- input line 222.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-3step.pdf' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.222 ...ges/training\_loss\_asha-ohgw-3step.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [9]
-
-LaTeX Warning: File ` images/training\_loss\_asha-random-warm.pdf ' not found o
-n input line 228.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-random-warm.pdf' no
-t found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.228 ...es/training\_loss\_asha-random-warm.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [10]
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...compute, and does not inflate variance^^Y
-                                                  meeting all pre-registered...
-
-
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.244 ...will extend the idea to mixed discrete^^S
-                                                  continuous spaces, integra...
-
-
-Package natbib Warning: Citation `jiang-2024-efficient' on page 11 undefined on
- input line 244.
-
-
-Package natbib Warning: Citation `khazi-2023-deep' on page 11 undefined on inpu
-t line 244.
-
-
-Package natbib Warning: Citation `panda-2022-new' on page 11 undefined on input
- line 244.
-
-
-Package natbib Warning: Citation `khodak-2021-federated' on page 11 undefined o
-n input line 244.
-
-(./paper.bbl [11])
+(./paper.bbl)
 
 Package natbib Warning: There were undefined citations.
 
-[12] (./paper.aux
+[8] (./paper.aux
 
 Package natbib Warning: Citation(s) may have changed.
 (natbib)                Rerun to get citations correct.
@@ -1594,12 +1186,10 @@ fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols
-/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmri8a.pfb>
-Output written on paper.pdf (12 pages, 157045 bytes).
+cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on paper.pdf (8 pages, 114418 bytes).
 Transcript written on paper.log.
 This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -1610,6 +1200,8 @@ L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty)
 (./agents4science_2025.sty
 (/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
 (/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty))
@@ -1623,9 +1215,6 @@ Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 (/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty))))
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
-(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 For additional information on amsmath, use the `?' option.
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -1858,6 +1447,7 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
 (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
 (./paper.aux)
 *geometry* driver: auto-detecting
@@ -1930,11 +1520,8 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
-
-Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
-ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
-your preamble.
- on input line 40.
+Package pgfplots notification 'compat/show suggested version=true': document ha
+s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 (./paper.out) (./paper.out)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
@@ -1944,250 +1531,158 @@ your preamble.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd) [1{/var/lib/texmf/fon
+ts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/
+base/8r.enc}] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
+LaTeX Warning: File `accuracy\_asha-baseline.pdf' not found on input line 90.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+
+! Package pdftex.def Error: File `accuracy_asha-baseline.pdf' not found: using 
+draft setting.
+
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.53 ...ia remain untouched; from the scheduler^^Y
-                                                  s perspective nothing has ...
+l.90 ....7\linewidth]{accuracy\_asha-baseline.pdf}
+                                                  
 
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
-dist/fonts/enc/dvips/base/8r.enc}]
+Underfull \vbox (badness 10000) has occurred while \output is active [2]
 
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
+LaTeX Warning: File `accuracy\_asha-ohgw-1step.pdf' not found on input line 96.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+
+
+! Package pdftex.def Error: File `accuracy_asha-ohgw-1step.pdf' not found: usin
+g draft setting.
+
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.55 ...nges on a minimal engineering footprint^^Y
-                                                  ideally a few lines of cod...
+l.96 ...\linewidth]{accuracy\_asha-ohgw-1step.pdf}
+                                                  
+
+LaTeX Warning: File `accuracy\_asha-ohgw-3step.pdf' not found on input line 102
+.
 
 
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
+! Package pdftex.def Error: File `accuracy_asha-ohgw-3step.pdf' not found: usin
+g draft setting.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.57 ...lidate OHGW in two contrasting settings^^Y
-                                                  vision (CIFAR-10, ResNet-2...
+l.102 ...linewidth]{accuracy\_asha-ohgw-3step.pdf}
+                                                  
+[3]
+
+LaTeX Warning: File `accuracy\_asha-random-warm.pdf' not found on input line 10
+8.
 
 
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
+! Package pdftex.def Error: File `accuracy_asha-random-warm.pdf' not found: usi
+ng draft setting.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.57 ...lling (WikiText-103, GPT2-small, PASHA)^^Y
-                                                  using 56 paired random see...
+l.108 ...inewidth]{accuracy\_asha-random-warm.pdf}
+                                                  
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+LaTeX Warning: File `accuracy\_comparison.pdf' not found on input line 114.
 
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+! Package pdftex.def Error: File `accuracy_comparison.pdf' not found: using dra
+ft setting.
+
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.67 ...e plan to extend OHGW to mixed discrete^^S
-                                                  continuous spaces, integra...
+l.114 ...=0.7\linewidth]{accuracy\_comparison.pdf}
+                                                  
 
-[2]
+Underfull \vbox (badness 10000) has occurred while \output is active [4]
 
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
+LaTeX Warning: File `accuracy\_trajectories.pdf' not found on input line 120.
 
-See the LaTeX manual or LaTeX Companion for explanation.
+
+! Package pdftex.def Error: File `accuracy_trajectories.pdf' not found: using d
+raft setting.
+
+See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.83 ...te{panda-2022-new,wang-2023-hypo}. OHGW^^Y
-                                                  s one-shot nature and tiny...
+l.120 ....7\linewidth]{accuracy\_trajectories.pdf}
+                                                  
 
-[3] [4] [5]
-
-LaTeX Warning: File ` images/accuracy\_asha-baseline.pdf ' not found on input l
-ine 174.
+LaTeX Warning: File `training\_loss\_asha-baseline.pdf' not found on input line
+ 126.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-baseline.pdf' not found:
+! Package pdftex.def Error: File `training_loss_asha-baseline.pdf' not found: u
+sing draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.126 ...width]{training\_loss\_asha-baseline.pdf}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [5]
+
+LaTeX Warning: File `training\_loss\_asha-ohgw-1step.pdf' not found on input li
+ne 132.
+
+
+! Package pdftex.def Error: File `training_loss_asha-ohgw-1step.pdf' not found:
  using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.174 ...th]{ images/accuracy\_asha-baseline.pdf }
+l.132 ...dth]{training\_loss\_asha-ohgw-1step.pdf}
                                                   
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-1step.pdf ' not found on input
- line 180.
+LaTeX Warning: File `training\_loss\_asha-ohgw-3step.pdf' not found on input li
+ne 138.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-1step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-ohgw-3step.pdf' not found:
+ using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.180 ...]{ images/accuracy\_asha-ohgw-1step.pdf }
+l.138 ...dth]{training\_loss\_asha-ohgw-3step.pdf}
                                                   
 
-LaTeX Warning: File ` images/accuracy\_asha-ohgw-3step.pdf ' not found on input
- line 186.
+Underfull \vbox (badness 10000) has occurred while \output is active [6]
+
+LaTeX Warning: File `training\_loss\_asha-random-warm.pdf' not found on input l
+ine 144.
 
 
-! Package pdftex.def Error: File `images/accuracy_asha-ohgw-3step.pdf' not foun
-d: using draft setting.
+! Package pdftex.def Error: File `training_loss_asha-random-warm.pdf' not found
+: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.186 ...]{ images/accuracy\_asha-ohgw-3step.pdf }
-                                                  
-[6]
-
-LaTeX Warning: File ` images/accuracy\_asha-random-warm.pdf ' not found on inpu
-t line 192.
-
-
-! Package pdftex.def Error: File `images/accuracy_asha-random-warm.pdf' not fou
-nd: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.192 ...{ images/accuracy\_asha-random-warm.pdf }
-                                                  
-
-LaTeX Warning: File ` images/accuracy\_comparison.pdf ' not found on input line
- 198.
-
-
-! Package pdftex.def Error: File `images/accuracy_comparison.pdf' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.198 ...width]{ images/accuracy\_comparison.pdf }
+l.144 ...th]{training\_loss\_asha-random-warm.pdf}
                                                   
 
 Underfull \vbox (badness 10000) has occurred while \output is active [7]
-
-LaTeX Warning: File ` images/accuracy\_trajectories.pdf ' not found on input li
-ne 204.
-
-
-! Package pdftex.def Error: File `images/accuracy_trajectories.pdf' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.204 ...dth]{ images/accuracy\_trajectories.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-baseline.pdf ' not found on i
-nput line 210.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-baseline.pdf' not f
-ound: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.210 ...mages/training\_loss\_asha-baseline.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [8]
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-1step.pdf ' not found on
- input line 216.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-1step.pdf' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.216 ...ges/training\_loss\_asha-ohgw-1step.pdf }
-                                                  
-
-LaTeX Warning: File ` images/training\_loss\_asha-ohgw-3step.pdf ' not found on
- input line 222.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-ohgw-3step.pdf' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.222 ...ges/training\_loss\_asha-ohgw-3step.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [9]
-
-LaTeX Warning: File ` images/training\_loss\_asha-random-warm.pdf ' not found o
-n input line 228.
-
-
-! Package pdftex.def Error: File `images/training_loss_asha-random-warm.pdf' no
-t found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.228 ...es/training\_loss\_asha-random-warm.pdf }
-                                                  
-
-Underfull \vbox (badness 10000) has occurred while \output is active [10]
-
-! LaTeX Error: Unicode character ^^Y (U+0019)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...compute, and does not inflate variance^^Y
-                                                  meeting all pre-registered...
-
-
-! LaTeX Error: Unicode character ^^S (U+0013)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.244 ...will extend the idea to mixed discrete^^S
-                                                  continuous spaces, integra...
-
-(./paper.bbl [11]) [12] (./paper.aux) )
+(./paper.bbl) [8] (./paper.aux) )
 (see the transcript file for additional information) </home/runner/.texlive2023
 /texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/
@@ -2195,10 +1690,8 @@ fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols
-/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmri8a.pfb>
-Output written on paper.pdf (12 pages, 159638 bytes).
+cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on paper.pdf (8 pages, 114842 bytes).
 Transcript written on paper.log.
