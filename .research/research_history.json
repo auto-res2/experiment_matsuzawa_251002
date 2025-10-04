@@ -632,7 +632,7 @@
           "github_repository_info": {
             "github_owner": "auto-res2",
             "repository_name": "experiment_matsuzawa_251002",
-            "branch_name": "research-0-retry-4"
+            "branch_name": "research-0-retry-3-exp-1"
           },
           "code": {
             "train_py": "",
@@ -678,7 +678,7 @@
           "github_repository_info": {
             "github_owner": "auto-res2",
             "repository_name": "experiment_matsuzawa_251002",
-            "branch_name": "research-0-retry-4"
+            "branch_name": "research-0-retry-3-exp-2"
           },
           "code": {
             "train_py": "",
