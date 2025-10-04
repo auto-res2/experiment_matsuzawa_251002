@@ -1,0 +1,197 @@
+
+Input:
+You are highly proficient in writing LaTeX. Based on the following instructions, please revise the LaTeX content accordingly.
+
+# Instructions:
+- The section labeled "# LaTeX Text" contains the LaTeX content that was processed.
+- The section labeled "# Error/Log" contains error messages or validation results from LaTeX processing (could be from compilation errors, chktex validation warnings, or other LaTeX tools).
+- Carefully read the error messages/logs and identify the necessary corrections in the LaTeX content:
+  - For compilation errors: Fix syntax errors, missing packages, undefined commands, etc.
+  - For chktex warnings: Address LaTeX style issues, improper formatting, spacing problems, etc.
+  - For combined logs: Address all issues mentioned across different validation stages.
+- Please output the entire corrected LaTeX content after applying all necessary fixes.
+
+# LaTeX Text:
+\begin{filecontents*}{references.bib}
+@misc{bohdal-2022-pasha,
+  title        = {PASHA: A Bandit Scheduler With Adaptive Halving},
+  author       = {Bohdal, Tomasz and others},
+  year         = {2022},
+  note         = {arXiv preprint arXiv:2205.00001}
+}
+
+@misc{wistuba-2022-supervising,
+  title        = {Supervising Multiple Hyperparameter Optimisers via DyHPO},
+  author       = {Wistuba, Martin and others},
+  year         = {2022},
+  note         = {arXiv preprint arXiv:2203.00002}
+}
+
+@misc{chandra-2019-gradient,
+  title        = {Gradient-Based Hyperparameter Optimisation},
+  author       = {Chandra, Rahul and others},
+  year         = {2019},
+  note         = {arXiv preprint arXiv:1910.00003}
+}
+
+@misc{bertrand-2020-implicit,
+  title        = {Implicit Differentiation for Hyperparameter Learning},
+  author       = {Bertrand, Benjamin and others},
+  year         = {2020},
+  note         = {arXiv preprint arXiv:2004.00004}
+}
+
+@misc{khazi-2023-deep,
+  title        = {Deep Ranking Ensembles for Hyperparameter Optimisation},
+  author       = {Khazi, Ben and others},
+  year         = {2023},
+  note         = {arXiv preprint arXiv:2302.00005}
+}
+
+@misc{jiang-2024-efficient,
+  title        = {Efficient Adaptive Fidelity Selection for BO},
+  author       = {Jiang, Ming and others},
+  year         = {2024},
+  note         = {arXiv preprint arXiv:2401.00006}
+}
+
+@misc{panda-2022-new,
+  title        = {New Perspectives on Differentially–Private HPO},
+  author       = {Panda, Rajdip and others},
+  year         = {2022},
+  note         = {arXiv preprint arXiv:2211.00007}
+}
+
+@misc{khodak-2021-federated,
+  title        = {Federated Hyperparameter Optimisation at Scale},
+  author       = {Khodak, Mikhail and others},
+  year         = {2021},
+  note         = {arXiv preprint arXiv:2109.00008}
+}
+
+@misc{nguyen-2019-bayesian,
+  title        = {Bayesian Optimisation of Iterative Learning (BOIL)},
+  author       = {Nguyen, Thang Bao and others},
+  year         = {2019},
+  note         = {arXiv preprint arXiv:1905.00009}
+}
+
+@misc{kadra-2023-scaling,
+  title        = {Scaling Laws for Hyperparameter Optimisation},
+  author       = {Kadra, Axel and others},
+  year         = {2023},
+  note         = {arXiv preprint arXiv:2304.00010}
+}
+
+@misc{daulton-2020-differentiable,
+  title        = {Differentiable Expected Hypervolume Improvement},
+  author       = {Daulton, Samuel and others},
+  year         = {2020},
+  note         = {arXiv preprint arXiv:2006.00011}
+}
+
+@misc{immer-2023-stochastic,
+  title        = {Stochastic Hypergradient Methods},
+  author       = {Immer, Alexander and others},
+  year         = {2023},
+  note         = {arXiv preprint arXiv:2303.00012}
+}
+
+@misc{killamsetty-2022-automata,
+  title        = {AUTOMATA: Subset Selection for Faster HPO},
+  author       = {Killamsetty, Kusupati and others},
+  year         = {2022},
+  note         = {arXiv preprint arXiv:2210.00013}
+}
+
+@misc{li-2020-multi,
+  title        = {DNN-MFBO: Multi–Fidelity Bayesian Optimisation for DNNs},
+  author       = {Li, Lisha and others},
+  year         = {2020},
+  note         = {arXiv preprint arXiv:2002.00014}
+}
+
+@misc{li-2021-batch,
+  title        = {BMBO-DARN: Batch Multi–Fidelity BO with Deep AR Networks},
+  author       = {Li, Lisha and others},
+  year         = {2021},
+  note         = {arXiv preprint arXiv:2106.00015}
+}
+
+@misc{wang-2023-hypo,
+  title        = {Hypo: Private Hyperparameter Optimisation Made Easy},
+  author       = {Wang, Zheng and others},
+  year         = {2023},
+  note         = {arXiv preprint arXiv:2307.00016}
+}
+\end{filecontents*}
+
+% -------------------------------------------------------------
+
+% The actual paper starts here
+
+\documentclass{article}
+
+% ensure that missing images do not stop compilation
+\PassOptionsToPackage{draft}{graphicx}
+
+\usepackage{agents4science_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+
+\usepackage{graphicx}
+\graphicspath{{images/}}   % search path for all graphics
+
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{xcolor}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}  % silence compatibility warnings
+
+\usepackage{float}
+
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+
+\title{One-Shot Hyper-Gradient Warm-Starts for Bandit-Style Hyperparameter Optimisation}
+
+\author{AIRAS}
+
+\begin{document}
+
+\maketitle
+
+% ----------------------------------------------------------------
+%  The remainder of the original manuscript is kept unchanged.
+% ----------------------------------------------------------------
+
+% (The full manuscript text from the original prompt would be placed here without modification.)
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
+
+# Error/Log:
+
+Output:
+{
+    "latex_text": "\\begin{filecontents*}{references.bib}\n@misc{bohdal-2022-pasha,\n  title        = {PASHA: A Bandit Scheduler With Adaptive Halving},\n  author       = {Bohdal, Tomasz and others},\n  year         = {2022},\n  note         = {arXiv preprint arXiv:2205.00001}\n}\n\n@misc{wistuba-2022-supervising,\n  title        = {Supervising Multiple Hyperparameter Optimisers via DyHPO},\n  author       = {Wistuba, Martin and others},\n  year         = {2022},\n  note         = {arXiv preprint arXiv:2203.00002}\n}\n\n@misc{chandra-2019-gradient,\n  title        = {Gradient-Based Hyperparameter Optimisation},\n  author       = {Chandra, Rahul and others},\n  year         = {2019},\n  note         = {arXiv preprint arXiv:1910.00003}\n}\n\n@misc{bertrand-2020-implicit,\n  title        = {Implicit Differentiation for Hyperparameter Learning},\n  author       = {Bertrand, Benjamin and others},\n  year         = {2020},\n  note         = {arXiv preprint arXiv:2004.00004}\n}\n\n@misc{khazi-2023-deep,\n  title        = {Deep Ranking Ensembles for Hyperparameter Optimisation},\n  author       = {Khazi, Ben and others},\n  year         = {2023},\n  note         = {arXiv preprint arXiv:2302.00005}\n}\n\n@misc{jiang-2024-efficient,\n  title        = {Efficient Adaptive Fidelity Selection for BO},\n  author       = {Jiang, Ming and others},\n  year         = {2024},\n  note         = {arXiv preprint arXiv:2401.00006}\n}\n\n@misc{panda-2022-new,\n  title        = {New Perspectives on Differentially--Private HPO},\n  author       = {Panda, Rajdip and others},\n  year         = {2022},\n  note         = {arXiv preprint arXiv:2211.00007}\n}\n\n@misc{khodak-2021-federated,\n  title        = {Federated Hyperparameter Optimisation at Scale},\n  author       = {Khodak, Mikhail and others},\n  year         = {2021},\n  note         = {arXiv preprint arXiv:2109.00008}\n}\n\n@misc{nguyen-2019-bayesian,\n  title        = {Bayesian Optimisation of Iterative Learning (BOIL)},\n  author       = {Nguyen, Thang Bao and others},\n  year         = {2019},\n  note         = {arXiv preprint arXiv:1905.00009}\n}\n\n@misc{kadra-2023-scaling,\n  title        = {Scaling Laws for Hyperparameter Optimisation},\n  author       = {Kadra, Axel and others},\n  year         = {2023},\n  note         = {arXiv preprint arXiv:2304.00010}\n}\n\n@misc{daulton-2020-differentiable,\n  title        = {Differentiable Expected Hypervolume Improvement},\n  author       = {Daulton, Samuel and others},\n  year         = {2020},\n  note         = {arXiv preprint arXiv:2006.00011}\n}\n\n@misc{immer-2023-stochastic,\n  title        = {Stochastic Hypergradient Methods},\n  author       = {Immer, Alexander and others},\n  year         = {2023},\n  note         = {arXiv preprint arXiv:2303.00012}\n}\n\n@misc{killamsetty-2022-automata,\n  title        = {AUTOMATA: Subset Selection for Faster HPO},\n  author       = {Killamsetty, Kusupati and others},\n  year         = {2022},\n  note         = {arXiv preprint arXiv:2210.00013}\n}\n\n@misc{li-2020-multi,\n  title        = {DNN-MFBO: Multi--Fidelity Bayesian Optimisation for DNNs},\n  author       = {Li, Lisha and others},\n  year         = {2020},\n  note         = {arXiv preprint arXiv:2002.00014}\n}\n\n@misc{li-2021-batch,\n  title        = {BMBO-DARN: Batch Multi--Fidelity BO with Deep AR Networks},\n  author       = {Li, Lisha and others},\n  year         = {2021},\n  note         = {arXiv preprint arXiv:2106.00015}\n}\n\n@misc{wang-2023-hypo,\n  title        = {Hypo: Private Hyperparameter Optimisation Made Easy},\n  author       = {Wang, Zheng and others},\n  year         = {2023},\n  note         = {arXiv preprint arXiv:2307.00016}\n}\n\\end{filecontents*}\n\n% -------------------------------------------------------------\n% The actual paper starts here\n\n\\documentclass{article}\n\n% ensure that missing images do not stop compilation\n\\PassOptionsToPackage{draft}{graphicx}\n\n% -------------------------------------------------------------\n% Packages\n% -------------------------------------------------------------\n\n% Custom conference template (provided by the organisers)\n\\usepackage{agents4science_2025}\n\n% Encoding and fonts\n\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}\n\n% Math and symbols\n\\usepackage{amsmath}\n\\usepackage{amsfonts}\n\\usepackage{nicefrac}\n\n% Graphics and figures\n\\usepackage{graphicx}\n\\graphicspath{{images/}}   % search path for all graphics\n\\usepackage{subcaption}\n\\usepackage{float}\n\\usepackage{tikz}\n\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}  % silence compatibility warnings\n\n% Tables\n\\usepackage{multirow}\n\\usepackage{array}\n\\usepackage{tabularx}\n\\usepackage{colortbl}\n\\usepackage{booktabs}\n\n% Algorithms\n\\usepackage{algorithm}\n\\usepackage{algorithmicx}\n\\usepackage{algpseudocode}\n\n% Bibliography\n\\usepackage[numbers]{natbib}  % required for plainnat style\n\n% Hyperlinks and clever references\n\\usepackage{hyperref}\n\\usepackage{cleveref}\n\n% Micro–typographic enhancements\n\\usepackage{microtype}\n\n% -------------------------------------------------------------\n% Metadata\n% -------------------------------------------------------------\n\\title{One--Shot Hyper--Gradient Warm--Starts for Bandit--Style Hyperparameter Optimisation}\n\\author{AIRAS}\n\n% -------------------------------------------------------------\n% Document starts here\n% -------------------------------------------------------------\n\\begin{document}\n\n\\maketitle\n\n% ----------------------------------------------------------------\n%  The remainder of the original manuscript is kept unchanged.\n% ----------------------------------------------------------------\n\n% (The full manuscript text from the original prompt would be placed here without modification.)\n\n\\bibliographystyle{plainnat}\n\\bibliography{references}\n\n\\end{document}"
+}
