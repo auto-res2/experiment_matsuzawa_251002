@@ -1,0 +1,8 @@
+=== [PHASE 2/2] Full experiment start Sat Oct  4 03:59:44 AM UTC 2025 ===
+Running 4 experiment variations defined in config/full_experiment.yaml
+
+========== Starting run: pasha-baseline ==========
+{"run_id": "pasha-baseline", "epoch": 1, "train_loss": 3.1942589678103968, "train_ppl": 24.392091668343667, "val_loss": 3.0007877913748082, "val_ppl": 20.10136637026642}
+{"run_id": "pasha-baseline", "epoch": 2, "train_loss": 3.038589286499437, "train_ppl": 20.875772718343853, "val_loss": 2.9517171234510746, "val_ppl": 19.138789192638537}
+{"run_id": "pasha-baseline", "epoch": 3, "train_loss": 2.969218556822731, "train_ppl": 19.476693718304873, "val_loss": 2.922179020292037, "val_ppl": 18.581733351568122}
+{"run_id": "pasha-baseline", "epoch": 4, "train_loss": 2.925080865034609, "train_ppl": 18.635732968161122, "val_loss": 2.9072656166504034, "val_ppl": 18.306672605693414}

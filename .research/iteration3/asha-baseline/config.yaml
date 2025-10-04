@@ -1,0 +1,24 @@
+dataset:
+  augment:
+    cutout_len: 16
+    magnitude: 9
+  name: CIFAR10
+  root: ./data
+  val_split: 5000
+model:
+  kwargs:
+    num_classes: 10
+  name: RESNET20
+optimizer:
+  lr: 0.1
+  momentum: 0.9
+  type: SGD
+  weight_decay: 0.0005
+run_id: asha-baseline
+seed: 0
+training:
+  batch_size: 128
+  epochs: 200
+  label_smoothing: 0.1
+warm_start:
+  type: none
