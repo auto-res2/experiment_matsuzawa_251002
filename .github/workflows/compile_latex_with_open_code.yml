@@ -53,7 +53,7 @@ jobs:
         - Autonomy: Execute all steps autonomously without asking for permission.
 
         Procedure:
-        1.  Change Directory: First, change your working directory to `${{ env.LATEX_DIR }}`. All subsequent commands MUST be run from this directory.
+        1.  Change Directory: First, change your working directory to `$LATEX_DIR`. All subsequent commands MUST be run from this directory.
         2.  Run ChkTeX: Execute the command `bash -c "$CHKTEX_COMMAND"`.
         3.  Analyze & Fix ChkTeX: If the command fails, you MUST analyze the chktex warnings from the output, fix the `paper.tex` file, and repeat step 2 until it passes.
         4.  Run LaTeX Compile: Once chktex passes, execute `bash -c "$COMPILE_COMMAND"`.
