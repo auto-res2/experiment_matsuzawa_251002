@@ -1,0 +1,114 @@
+\begin{thebibliography}{16}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bertrand et~al.(2020)Bertrand, Klopfenstein, Blondel, Vaiter,
+  Gramfort, and Salmon]{bertrand-2020-implicit}
+Quentin Bertrand, Quentin Klopfenstein, Mathieu Blondel, Samuel Vaiter,
+  Alexandre Gramfort, and Joseph Salmon.
+\newblock Implicit differentiation of lasso-type models for hyperparameter
+  optimization.
+\newblock 2020.
+
+\bibitem[Bohdal et~al.(2022)Bohdal, Balles, Wistuba, Ermis, Archambeau, and
+  Zappella]{bohdal-2022-pasha}
+Ondrej Bohdal, Lukas Balles, Martin Wistuba, Beyza Ermis, Cédric Archambeau,
+  and Giovanni Zappella.
+\newblock Pasha: Efficient hpo and nas with progressive resource allocation.
+\newblock 2022.
+
+\bibitem[Chandra et~al.(2019)Chandra, Xie, Ragan-Kelley, and
+  Meijer]{chandra-2019-gradient}
+Kartik Chandra, Audrey Xie, Jonathan Ragan-Kelley, and Erik Meijer.
+\newblock Gradient descent: The ultimate optimizer.
+\newblock 2019.
+
+\bibitem[Daulton et~al.(2020)Daulton, Balandat, and
+  Bakshy]{daulton-2020-differentiable}
+Samuel Daulton, Maximilian Balandat, and Eytan Bakshy.
+\newblock Differentiable expected hypervolume improvement for parallel
+  multi-objective bayesian optimization.
+\newblock \emph{Advances in Neural Information Processing Systems 33, 2020},
+  2020.
+
+\bibitem[Immer et~al.(2023)Immer, van~der Ouderaa, van~der Wilk, Rätsch, and
+  Schölkopf]{immer-2023-stochastic}
+Alexander Immer, Tycho F.~A. van~der Ouderaa, Mark van~der Wilk, Gunnar
+  Rätsch, and Bernhard Schölkopf.
+\newblock Stochastic marginal likelihood gradients using neural tangent
+  kernels.
+\newblock 2023.
+
+\bibitem[Jiang and Mian(2024)]{jiang-2024-efficient}
+Jiantong Jiang and Ajmal Mian.
+\newblock Efficient hyperparameter optimization with adaptive fidelity
+  identification.
+\newblock 2024.
+
+\bibitem[Kadra et~al.(2023)Kadra, Janowski, Wistuba, and
+  Grabocka]{kadra-2023-scaling}
+Arlind Kadra, Maciej Janowski, Martin Wistuba, and Josif Grabocka.
+\newblock Scaling laws for hyperparameter optimization.
+\newblock 2023.
+
+\bibitem[Khazi et~al.(2023)Khazi, Arango, and Grabocka]{khazi-2023-deep}
+Abdus~Salam Khazi, Sebastian~Pineda Arango, and Josif Grabocka.
+\newblock Deep ranking ensembles for hyperparameter optimization.
+\newblock 2023.
+
+\bibitem[Khodak et~al.(2021)Khodak, Tu, Li, Li, Balcan, Smith, and
+  Talwalkar]{khodak-2021-federated}
+Mikhail Khodak, Renbo Tu, Tian Li, Liam Li, Maria-Florina Balcan, Virginia
+  Smith, and Ameet Talwalkar.
+\newblock Federated hyperparameter tuning: Challenges, baselines, and
+  connections to weight-sharing.
+\newblock 2021.
+
+\bibitem[Killamsetty et~al.(2022)Killamsetty, Abhishek, Aakriti, Evfimievski,
+  Popa, Ramakrishnan, and Iyer]{killamsetty-2022-automata}
+Krishnateja Killamsetty, Guttu~Sai Abhishek, Aakriti, Alexandre~V. Evfimievski,
+  Lucian Popa, Ganesh Ramakrishnan, and Rishabh Iyer.
+\newblock Automata: Gradient based data subset selection for compute-efficient
+  hyper-parameter tuning.
+\newblock 2022.
+
+\bibitem[Li et~al.(2020)Li, Xing, Kirby, and Zhe]{li-2020-multi}
+Shibo Li, Wei Xing, Mike Kirby, and Shandian Zhe.
+\newblock Multi-fidelity bayesian optimization via deep neural networks.
+\newblock 2020.
+
+\bibitem[Li et~al.(2021)Li, Kirby, and Zhe]{li-2021-batch}
+Shibo Li, Robert~M. Kirby, and Shandian Zhe.
+\newblock Batch multi-fidelity bayesian optimization with deep auto-regressive
+  networks.
+\newblock 2021.
+
+\bibitem[Nguyen et~al.(2019)Nguyen, Schulze, and Osborne]{nguyen-2019-bayesian}
+Vu~Nguyen, Sebastian Schulze, and Michael~A Osborne.
+\newblock Bayesian optimization for iterative learning.
+\newblock 2019.
+
+\bibitem[Panda et~al.(2022)Panda, Tang, Mahloujifar, Sehwag, and
+  Mittal]{panda-2022-new}
+Ashwinee Panda, Xinyu Tang, Saeed Mahloujifar, Vikash Sehwag, and Prateek
+  Mittal.
+\newblock A new linear scaling rule for private adaptive hyperparameter
+  optimization.
+\newblock 2022.
+
+\bibitem[Wang et~al.(2023)Wang, Gao, Zhang, Su, and Shen]{wang-2023-hypo}
+Hua Wang, Sheng Gao, Huanyu Zhang, Weijie~J. Su, and Milan Shen.
+\newblock Dp-hypo: An adaptive private framework for hyperparameter
+  optimization.
+\newblock 2023.
+
+\bibitem[Wistuba et~al.(2022)Wistuba, Kadra, and
+  Grabocka]{wistuba-2022-supervising}
+Martin Wistuba, Arlind Kadra, and Josif Grabocka.
+\newblock Supervising the multi-fidelity race of hyperparameter configurations.
+\newblock 2022.
+
+\end{thebibliography}
